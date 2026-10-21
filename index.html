@@ -1,353 +1,558 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Memoria de Colores 🎮</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b18">
+<title>Neon Memory | Juego de memoria</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #10172a, #202c4a);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .game {
-      width: 100%;
-      max-width: 440px;
-      text-align: center;
-      background: #172036;
-      padding: 25px 20px;
-      border-radius: 24px;
-      border: 1px solid #35415e;
-      box-shadow: 0 15px 40px #0005;
-    }
-
-    h1 {
-      font-size: 30px;
-      margin-bottom: 8px;
-    }
-
-    .description {
-      color: #bdc9e3;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 22px;
-    }
-
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .stat {
-      background: #26324d;
-      border-radius: 12px;
-      padding: 12px 8px;
-      flex: 1;
-    }
-
-    .stat span {
-      display: block;
-      color: #b9c7e3;
-      font-size: 12px;
-      margin-bottom: 5px;
-    }
-
-    .stat strong {
-      font-size: 22px;
-    }
-
-    #message {
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .board {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      max-width: 330px;
-      margin: 0 auto 22px;
-    }
-
-    .color {
-      width: 100%;
-      aspect-ratio: 1;
-      border: 4px solid #ffffff20;
-      border-radius: 24px;
-      cursor: pointer;
-      transition: transform 0.12s, filter 0.12s;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .color:active {
-      transform: scale(0.94);
-    }
-
-    .blue { background: #2684ff; }
-    .red { background: #ff405b; }
-    .green { background: #20c878; }
-    .yellow { background: #ffca3a; }
-
-    .color.lit {
-      filter: brightness(1.65);
-      transform: scale(1.04);
-      border-color: white;
-      box-shadow: 0 0 25px #ffffff55;
-    }
-
-    .color:disabled {
-      cursor: default;
-    }
-
-    .main-button {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 13px;
-      background: #7867ff;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-
-    .main-button:hover {
-      background: #9285ff;
-    }
-
-    .main-button:active {
-      transform: scale(0.98);
-    }
-
-    .main-button:focus-visible,
-    .color:focus-visible {
-      outline: 3px solid white;
-      outline-offset: 4px;
-    }
-
-    .tip {
-      color: #9eacc9;
-      font-size: 12px;
-      margin-top: 17px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 360px) {
-      h1 { font-size: 25px; }
-      .game { padding: 20px 14px; }
-      .board { gap: 10px; }
-      .color { border-radius: 18px; }
-    }
-  </style>
+<style>
+:root {
+  --bg:#090b18; --panel:#12172b; --panel2:#1a2140;
+  --purple:#9366ff; --cyan:#42e8ff; --text:#f5f6ff;
+  --muted:#a6b0d0; --green:#45f5ad; --red:#ff5378;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  min-height:100vh; padding:24px 14px;
+  font-family:Inter,system-ui,Arial,sans-serif;
+  color:var(--text);
+  background:radial-gradient(ellipse at top,#20204c 0%,transparent 55%),
+  linear-gradient(145deg,#080b16,#10142a 70%,#0b1020);
+  display:flex; justify-content:center; align-items:center;
+}
+button,input { font:inherit; }
+button:focus-visible,input:focus-visible {
+  outline:3px solid var(--cyan); outline-offset:3px;
+}
+.app { width:100%; max-width:570px; }
+header { text-align:center; margin-bottom:22px; }
+.logo {
+  display:inline-block; color:var(--cyan); border:1px solid #42e8ff55;
+  background:#42e8ff0c; border-radius:30px; padding:7px 13px;
+  font-size:11px; letter-spacing:3px; font-weight:900; margin-bottom:13px;
+}
+h1 { font-size:clamp(29px,7vw,43px); line-height:1.1; font-weight:950; letter-spacing:-1.5px; }
+h1 span { color:var(--cyan); text-shadow:0 0 25px #42e8ff55; }
+.subtitle { color:var(--muted); margin-top:10px; font-size:14px; }
+.panel {
+  background:linear-gradient(145deg,#151a31ee,#101426f5);
+  border:1px solid #9ba9ff20; border-radius:22px; padding:20px;
+  box-shadow:0 18px 60px #0005,inset 0 1px #ffffff08; margin-bottom:14px;
+}
+.section-label { font-size:11px; letter-spacing:2px; font-weight:850; color:var(--muted); margin-bottom:12px; display:block; }
+.modes { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+.mode {
+  cursor:pointer; padding:13px 5px; color:var(--muted);
+  background:#ffffff04; border:1px solid #8794c526; border-radius:13px;
+  font-weight:800; transition:.2s;
+}
+.mode small { display:block; font-size:10px; margin-top:5px; font-weight:500; }
+.mode.active { color:white; background:#9366ff20; border-color:var(--purple); box-shadow:0 0 20px #9366ff15; }
+.mode:disabled { opacity:.6; cursor:not-allowed; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:18px; }
+.stat { text-align:center; padding:12px 4px; border:1px solid #8e9bcb1c; background:#ffffff04; border-radius:14px; }
+.stat span { display:block; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:1px; margin-bottom:5px; }
+.stat strong { font-size:24px; font-variant-numeric:tabular-nums; }
+.best-value { color:#ffdc72; }
+.level-value { color:var(--cyan); }
+.status {
+  min-height:48px; text-align:center; display:flex; justify-content:center;
+  align-items:center; padding:8px; margin-bottom:14px;
+  color:var(--cyan); font-weight:800; font-size:14px;
+}
+.status.error { color:var(--red); }
+.status.success { color:var(--green); }
+.board { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; max-width:390px; margin:0 auto 20px; }
+.tile {
+  width:100%; aspect-ratio:1; border-radius:19px; border:2px solid #ffffff20;
+  cursor:pointer; opacity:.84; transition:transform .12s,filter .12s,opacity .12s,box-shadow .12s;
+}
+.tile:active { transform:scale(.95); }
+.tile:disabled { cursor:default; }
+.tile.lit { opacity:1; filter:brightness(1.5); transform:scale(1.035); border-color:#fff; box-shadow:0 0 28px var(--glow,#ffffff66); }
+.tile[data-color="0"] { background:#3287ff; --glow:#3287ff99; }
+.tile[data-color="1"] { background:#ff426b; --glow:#ff426b99; }
+.tile[data-color="2"] { background:#22d69b; --glow:#22d69b99; }
+.tile[data-color="3"] { background:#ffc94d; --glow:#ffc94d99; }
+.tile[data-color="4"] { background:#a66bff; --glow:#a66bff99; }
+.tile[data-color="5"] { background:#ff8b3d; --glow:#ff8b3d99; }
+.tile[data-color="6"] { background:#36e6e9; --glow:#36e6e999; }
+.tile[data-color="7"] { background:#ff70d2; --glow:#ff70d299; }
+.tile[data-color="8"] { background:#a9f04b; --glow:#a9f04b99; }
+.actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.btn { border:0; border-radius:13px; padding:14px 10px; cursor:pointer; font-weight:850; transition:.18s; }
+.btn:active { transform:scale(.98); }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+.primary { color:#080b18; background:linear-gradient(100deg,var(--cyan),#8dceff); box-shadow:0 5px 22px #42e8ff20; }
+.secondary { color:white; background:#ffffff09; border:1px solid #8794c52e; }
+.hint { text-align:center; color:var(--muted); font-size:12px; line-height:1.6; margin-top:15px; }
+.name-input {
+  width:100%; padding:12px 13px; color:white; background:#080c1a;
+  border:1px solid #8794c52e; border-radius:11px; margin-bottom:12px;
+}
+.name-input::placeholder { color:#7380a5; }
+.online-title { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; }
+.online-title h2 { font-size:17px; }
+.online-badge { font-size:10px; color:var(--green); background:#45f5ad10; border:1px solid #45f5ad35; border-radius:30px; padding:6px 9px; white-space:nowrap; }
+#leaderboard { list-style:none; }
+#leaderboard li { display:flex; align-items:center; gap:10px; padding:11px 4px; border-bottom:1px solid #ffffff0b; font-size:13px; }
+#leaderboard li:last-child { border-bottom:0; }
+.rank { width:25px; color:#ffdc72; font-weight:900; }
+.player { flex:1; overflow-wrap:anywhere; }
+.player small { display:block; color:var(--muted); margin-top:3px; font-size:10px; }
+.score { color:var(--cyan); font-weight:900; }
+.empty { color:var(--muted); text-align:center; padding:18px 5px; font-size:13px; }
+.foot { text-align:center; color:#707c9e; font-size:11px; padding:8px; }
+@media(max-width:390px) {
+  .panel { padding:15px; border-radius:18px; }
+  .board { gap:8px; }
+  .tile { border-radius:14px; }
+  .stat strong { font-size:21px; }
+  .mode { font-size:12px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { transition:none!important; }
+}
+</style>
 </head>
-
 <body>
-  <main class="game">
-    <h1>🧠 Memoria de Colores</h1>
+<main class="app">
+  <header>
+    <div class="logo">◆ ARCADE MEMORY SYSTEM ◆</div>
+    <h1>NEON <span>MEMORY</span></h1>
+    <p class="subtitle">Tu memoria es tu mejor arma. ¿Hasta dónde llegarás?</p>
+  </header>
 
-    <p class="description">
-      ¡Mira los colores, recuerda el orden y repite la secuencia!
-    </p>
+  <section class="panel">
+    <div class="section-label">01 / ELIGE TU DIFICULTAD</div>
+    <div class="modes">
+      <button class="mode active" data-mode="easy">🟢 Fácil<small>4 colores</small></button>
+      <button class="mode" data-mode="normal">🟡 Normal<small>6 colores</small></button>
+      <button class="mode" data-mode="hard">🔴 Difícil<small>9 colores</small></button>
+    </div>
+  </section>
 
+  <section class="panel">
     <div class="stats">
-      <div class="stat">
-        <span>RONDA</span>
-        <strong id="round">0</strong>
-      </div>
-
-      <div class="stat">
-        <span>RÉCORD</span>
-        <strong id="best">0</strong>
-      </div>
+      <div class="stat"><span>RONDA</span><strong id="round">0</strong></div>
+      <div class="stat"><span>RÉCORD PERSONAL</span><strong class="best-value" id="best">0</strong></div>
+      <div class="stat"><span>COLOR POR COLOR</span><strong class="level-value" id="progress">0/0</strong></div>
     </div>
-
-    <div id="message" role="status" aria-live="polite">
-      Pulsa comenzar para jugar.
+    <div id="message" class="status" role="status" aria-live="polite">Pulsa «Comenzar» para jugar.</div>
+    <div class="board" id="board" aria-label="Tablero de colores"></div>
+    <div class="actions">
+      <button id="start" class="btn primary">▶ COMENZAR</button>
+      <button id="restart" class="btn secondary">↻ REINICIAR</button>
     </div>
+    <p class="hint" id="hint">Observa la secuencia y repite los colores en el mismo orden. Cada ronda agrega un color más.</p>
+  </section>
 
-    <div class="board" id="board">
-      <button class="color blue" data-color="0"
-        aria-label="Azul" disabled></button>
-
-      <button class="color red" data-color="1"
-        aria-label="Rojo" disabled></button>
-
-      <button class="color green" data-color="2"
-        aria-label="Verde" disabled></button>
-
-      <button class="color yellow" data-color="3"
-        aria-label="Amarillo" disabled></button>
+  <section class="panel">
+    <div class="online-title">
+      <h2>🏆 Clasificación global</h2>
+      <span class="online-badge" id="connection">● COMPROBANDO</span>
     </div>
+    <label class="section-label" for="playerName">TU NOMBRE DE JUGADOR</label>
+    <input id="playerName" class="name-input" maxlength="16" placeholder="Escribe tu apodo..." autocomplete="nickname">
+    <ol id="leaderboard"><li class="empty">Cargando clasificación...</li></ol>
+    <p class="hint" id="onlineMessage">Conectando la clasificación global...</p>
+    <button id="refresh" class="btn secondary" style="width:100%;margin-top:12px">⟳ ACTUALIZAR CLASIFICACIÓN</button>
+  </section>
+  <p class="foot">NEON MEMORY · Entrena tu mente, supera tu récord.</p>
+</main>
 
-    <button class="main-button" id="start">
-      🎮 Comenzar juego
-    </button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
 
-    <p class="tip">
-      Consejo: concéntrate en el orden de los colores.
-      Cada ronda agrega un color más. ¡No te equivoques!
-    </p>
-  </main>
+/* CONFIGURACIÓN DE SUPABASE */
+const SUPABASE_URL = "https://ckspckfzzeguqyfghkyz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_qE2xjMbqzykV-NcL9p4AlQ_BT56-okJ";
 
-  <script>
-    const colors = [...document.querySelectorAll(".color")];
-    const message = document.getElementById("message");
-    const roundDisplay = document.getElementById("round");
-    const bestDisplay = document.getElementById("best");
-    const startButton = document.getElementById("start");
+const MODES = {
+  easy: { name:"Fácil", count:4, speed:520 },
+  normal: { name:"Normal", count:6, speed:390 },
+  hard: { name:"Difícil", count:9, speed:270 }
+};
 
-    let sequence = [];
-    let playerPosition = 0;
-    let round = 0;
-    let best = 0;
-    let acceptingInput = false;
-    let gameOver = false;
-    let flashTimers = [];
+const $ = id => document.getElementById(id);
+const board = $("board");
+const message = $("message");
+const roundDisplay = $("round");
+const bestDisplay = $("best");
+const progressDisplay = $("progress");
+const startButton = $("start");
+const restartButton = $("restart");
+const nameInput = $("playerName");
+const leaderboard = $("leaderboard");
+const connection = $("connection");
+const onlineMessage = $("onlineMessage");
+const modeButtons = [...document.querySelectorAll(".mode")];
 
-    function wait(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+let mode = "easy";
+let sequence = [];
+let playerPosition = 0;
+let round = 0;
+let best = 0;
+let acceptingInput = false;
+let gameOver = false;
+let gameStarted = false;
+let busy = false;
+let runId = 0;
+let timers = [];
+let supabaseClient = null;
+let submittingScore = false;
 
-    function clearFlashes() {
-      flashTimers.forEach(clearTimeout);
-      flashTimers = [];
-      colors.forEach(color => color.classList.remove("lit"));
-    }
+const colorNames = ["Azul","Rojo","Verde","Amarillo","Morado","Naranja","Turquesa","Rosa","Verde lima"];
 
-    function lightColor(index, duration = 350) {
-      const color = colors[index];
-      color.classList.add("lit");
+function wait(ms, id = runId) {
+  return new Promise(resolve => {
+    const timer = setTimeout(() => {
+      timers = timers.filter(t => t !== timer);
+      resolve(id === runId);
+    }, ms);
+    timers.push(timer);
+  });
+}
 
-      const timer = setTimeout(() => {
-        color.classList.remove("lit");
-      }, duration);
+function cancelTimers() {
+  timers.forEach(clearTimeout);
+  timers = [];
+}
 
-      flashTimers.push(timer);
-    }
+function setMessage(text, type = "") {
+  message.textContent = text;
+  message.className = "status" + (type ? " " + type : "");
+}
 
-    function enableColors(enabled) {
-      colors.forEach(color => {
-        color.disabled = !enabled;
-      });
-    }
+function storageKey() {
+  return "neon-memory-best-v1-" + mode;
+}
 
-    async function showSequence() {
-      acceptingInput = false;
-      enableColors(false);
-      startButton.disabled = true;
-      startButton.style.opacity = "0.6";
+function loadBest() {
+  try { best = Number(localStorage.getItem(storageKey())) || 0; }
+  catch (_) { best = 0; }
+  bestDisplay.textContent = best;
+}
 
-      message.textContent = "👀 ¡Memoriza los colores!";
+function saveBest() {
+  try { localStorage.setItem(storageKey(), String(best)); }
+  catch (_) {}
+}
 
-      await wait(600);
+function createBoard() {
+  board.replaceChildren();
+  for (let i = 0; i < MODES[mode].count; i++) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "tile";
+    button.dataset.color = String(i);
+    button.setAttribute("aria-label", colorNames[i]);
+    button.title = colorNames[i];
+    button.disabled = true;
+    button.addEventListener("click", handleColorClick);
+    board.appendChild(button);
+  }
+  updateProgress();
+}
 
-      for (const index of sequence) {
-        lightColor(index);
-        await wait(550);
-      }
+function tiles() {
+  return [...board.querySelectorAll(".tile")];
+}
 
-      message.textContent = "👉 ¡Ahora repite la secuencia!";
-      playerPosition = 0;
-      acceptingInput = true;
-      enableColors(true);
-      startButton.disabled = false;
-      startButton.style.opacity = "1";
-      startButton.textContent = "↻ Reiniciar partida";
-    }
+function enableTiles(enabled) {
+  tiles().forEach(tile => tile.disabled = !enabled);
+}
 
-    async function nextRound() {
-      round++;
-      roundDisplay.textContent = round;
+function updateProgress() {
+  progressDisplay.textContent = playerPosition + "/" + sequence.length;
+}
 
-      sequence.push(Math.floor(Math.random() * colors.length));
+function lightColor(index, duration) {
+  const tile = tiles()[index];
+  if (!tile) return;
+  tile.classList.add("lit");
+  const timer = setTimeout(() => {
+    tile.classList.remove("lit");
+    timers = timers.filter(t => t !== timer);
+  }, duration);
+  timers.push(timer);
+}
 
-      await showSequence();
-    }
+function clearLights() {
+  tiles().forEach(tile => tile.classList.remove("lit"));
+}
 
-    function startGame() {
-      clearFlashes();
+function updateModeButtons() {
+  modeButtons.forEach(button => {
+    button.classList.toggle("active", button.dataset.mode === mode);
+    button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
+  });
+}
 
-      sequence = [];
-      playerPosition = 0;
-      round = 0;
-      gameOver = false;
-      acceptingInput = false;
+function updateStartButton() {
+  startButton.textContent = gameStarted && !gameOver ? "↻ NUEVA PARTIDA" : "▶ COMENZAR";
+}
 
-      roundDisplay.textContent = "0";
-      message.textContent = "¡Prepárate!";
+async function showSequence(id) {
+  acceptingInput = false;
+  busy = true;
+  enableTiles(false);
+  startButton.disabled = true;
+  restartButton.disabled = true;
+  modeButtons.forEach(button => button.disabled = true);
+  setMessage("👀 ¡Memoriza la secuencia!");
 
-      startButton.textContent = "↻ Reiniciar partida";
+  if (!await wait(650, id)) return;
+  const speed = MODES[mode].speed;
 
-      nextRound();
-    }
+  for (const index of sequence) {
+    if (id !== runId) return;
+    lightColor(index, Math.max(150, speed - 90));
+    if (!await wait(speed, id)) return;
+  }
 
-    function finishGame() {
-      acceptingInput = false;
-      gameOver = true;
-      enableColors(false);
+  if (id !== runId) return;
+  clearLights();
+  setMessage("🧠 ¡Tu turno! Repite el orden.");
+  playerPosition = 0;
+  updateProgress();
+  acceptingInput = true;
+  busy = false;
+  enableTiles(true);
+  startButton.disabled = false;
+  restartButton.disabled = false;
+  modeButtons.forEach(button => button.disabled = false);
+}
 
-      if (round > best) {
-        best = round;
-        bestDisplay.textContent = best;
-      }
+async function nextRound(id = runId) {
+  if (id !== runId || gameOver) return;
+  round++;
+  roundDisplay.textContent = round;
+  sequence.push(Math.floor(Math.random() * MODES[mode].count));
+  updateProgress();
+  await showSequence(id);
+}
 
-      message.textContent = `💀 ¡Fin del juego! Llegaste a la ronda ${round}.`;
-      startButton.textContent = "🎮 Jugar de nuevo";
-    }
+function startGame() {
+  runId++;
+  cancelTimers();
+  clearLights();
+  sequence = [];
+  playerPosition = 0;
+  round = 0;
+  acceptingInput = false;
+  gameOver = false;
+  gameStarted = true;
+  busy = false;
+  roundDisplay.textContent = "0";
+  updateProgress();
+  setMessage("⚡ ¡Prepárate!");
+  updateStartButton();
+  nextRound(runId);
+}
 
-    async function handleColorClick(event) {
-      if (!acceptingInput || gameOver) return;
+function chooseMode(nextMode) {
+  if (!MODES[nextMode] || nextMode === mode) return;
+  mode = nextMode;
+  runId++;
+  cancelTimers();
+  clearLights();
+  sequence = [];
+  playerPosition = 0;
+  round = 0;
+  acceptingInput = false;
+  gameOver = false;
+  gameStarted = false;
+  busy = false;
+  roundDisplay.textContent = "0";
+  updateModeButtons();
+  createBoard();
+  loadBest();
+  updateStartButton();
+  startButton.disabled = false;
+  restartButton.disabled = false;
+  modeButtons.forEach(button => button.disabled = false);
+  setMessage("Modo " + MODES[mode].name + " seleccionado.");
+}
 
-      const index = Number(event.currentTarget.dataset.color);
+async function handleColorClick(event) {
+  if (!acceptingInput || gameOver || busy) return;
+  const index = Number(event.currentTarget.dataset.color);
 
-      lightColor(index, 180);
+  if (index !== sequence[playerPosition]) {
+    finishGame();
+    return;
+  }
 
-      if (index !== sequence[playerPosition]) {
-        finishGame();
-        return;
-      }
+  lightColor(index, 150);
+  playerPosition++;
+  updateProgress();
 
-      playerPosition++;
+  if (playerPosition === sequence.length) {
+    acceptingInput = false;
+    busy = true;
+    enableTiles(false);
+    setMessage("✅ ¡Secuencia perfecta!");
+    const currentRun = runId;
+    await wait(650, currentRun);
+    if (currentRun !== runId || gameOver || !gameStarted) return;
+    busy = false;
+    nextRound(currentRun);
+  }
+}
 
-      if (playerPosition === sequence.length) {
-        acceptingInput = false;
-        enableColors(false);
+async function finishGame() {
+  if (gameOver) return;
+  acceptingInput = false;
+  gameOver = true;
+  busy = false;
+  enableTiles(false);
+  clearLights();
 
-        message.textContent = "✅ ¡Correcto! Siguiente ronda...";
-        await wait(800);
+  const id = runId;
+  const finalRound = round;
+  const previousBest = best;
 
-        if (!gameOver) {
-          nextRound();
-        }
-      }
-    }
+  if (round > best) {
+    best = round;
+    bestDisplay.textContent = best;
+    saveBest();
+  }
 
-    colors.forEach(color => {
-      color.addEventListener("click", handleColorClick);
-    });
+  setMessage(
+    round > previousBest
+      ? "🏆 ¡NUEVO RÉCORD! Llegaste a la ronda " + finalRound + "."
+      : "💥 Fin del juego. Llegaste a la ronda " + finalRound + ".",
+    round > previousBest ? "success" : "error"
+  );
 
-    startButton.addEventListener("click", startGame);
-  </script>
+  updateStartButton();
+  startButton.disabled = false;
+  restartButton.disabled = false;
+  modeButtons.forEach(button => button.disabled = false);
+
+  if (finalRound > 0) await submitGlobalScore(finalRound, mode, id);
+}
+
+function setupSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_KEY || !window.supabase || !window.supabase.createClient) {
+    connection.textContent = "● SIN CONFIGURAR";
+    connection.style.color = "#ffdc72";
+    onlineMessage.textContent = "El récord personal funciona, pero falta configurar Supabase.";
+    leaderboard.replaceChildren();
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "La clasificación global aún no está conectada.";
+    leaderboard.appendChild(li);
+    return;
+  }
+
+  try {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    loadLeaderboard();
+  } catch (error) {
+    connection.textContent = "● ERROR";
+    onlineMessage.textContent = "No se pudo iniciar la conexión con la base de datos.";
+  }
+}
+
+async function loadLeaderboard() {
+  if (!supabaseClient) return;
+  connection.textContent = "● CONECTANDO";
+  onlineMessage.textContent = "Consultando las mejores puntuaciones...";
+
+  const { data, error } = await supabaseClient
+    .from("memory_scores")
+    .select("player, score, mode, created_at")
+    .order("score", { ascending: false })
+    .order("created_at", { ascending: true })
+    .limit(10);
+
+  if (error) {
+    connection.textContent = "● REVISAR CONFIG.";
+    onlineMessage.textContent = "No se pudo cargar la clasificación. Comprueba la tabla y sus permisos en Supabase.";
+    leaderboard.replaceChildren();
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "Clasificación no disponible.";
+    leaderboard.appendChild(li);
+    return;
+  }
+
+  connection.textContent = "● EN LÍNEA";
+  onlineMessage.textContent = "Top 10 de puntuaciones enviadas a la base de datos.";
+  leaderboard.replaceChildren();
+
+  if (!data || data.length === 0) {
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "¡Sé el primero en registrar una puntuación!";
+    leaderboard.appendChild(li);
+    return;
+  }
+
+  data.forEach((entry, index) => {
+    const li = document.createElement("li");
+    const rank = document.createElement("span");
+    rank.className = "rank";
+    rank.textContent = "#" + (index + 1);
+
+    const player = document.createElement("span");
+    player.className = "player";
+    player.textContent = entry.player;
+    const small = document.createElement("small");
+    small.textContent = MODES[entry.mode]?.name || entry.mode;
+    player.appendChild(small);
+
+    const score = document.createElement("span");
+    score.className = "score";
+    score.textContent = entry.score + " rondas";
+    li.append(rank, player, score);
+    leaderboard.appendChild(li);
+  });
+}
+
+async function submitGlobalScore(score, scoreMode, id) {
+  if (!supabaseClient || submittingScore) return;
+  const player = nameInput.value.trim().replace(/\s+/g, " ").slice(0, 16);
+
+  if (!player) {
+    onlineMessage.textContent = "Escribe tu apodo para enviar tu puntuación a la clasificación global.";
+    return;
+  }
+
+  submittingScore = true;
+  onlineMessage.textContent = "Enviando tu puntuación...";
+
+  try {
+    const { error } = await supabaseClient
+      .from("memory_scores")
+      .insert({ player, score, mode: scoreMode });
+
+    if (error) throw error;
+    if (id === runId) onlineMessage.textContent = "¡Puntuación enviada correctamente!";
+    await loadLeaderboard();
+  } catch (error) {
+    onlineMessage.textContent = "No se pudo guardar la puntuación. Comprueba los permisos de Supabase.";
+  } finally {
+    submittingScore = false;
+  }
+}
+
+modeButtons.forEach(button => {
+  button.addEventListener("click", () => chooseMode(button.dataset.mode));
+});
+startButton.addEventListener("click", startGame);
+restartButton.addEventListener("click", startGame);
+$("refresh").addEventListener("click", loadLeaderboard);
+
+createBoard();
+loadBest();
+updateModeButtons();
+setupSupabase();
+</script>
 </body>
 </html>
