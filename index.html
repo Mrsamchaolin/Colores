@@ -530,6 +530,33 @@ function setStatus(message){
 }
 
 function buildBoard(){
+  const total = MODES[modeSelect.value].colors;
+
+  board.innerHTML = "";
+  board.style.display = "grid";
+  board.style.gridTemplateColumns =
+    total === 4
+      ? "repeat(2, minmax(0, 1fr))"
+      : "repeat(3, minmax(0, 1fr))";
+
+  for(let i = 0; i < total; i++){
+    const tile = document.createElement("button");
+
+    tile.type = "button";
+    tile.className = "tile";
+    tile.dataset.color = String(i);
+    tile.setAttribute("aria-label", "Color " + (i + 1));
+    tile.style.backgroundColor = colors[i];
+
+    tile.addEventListener("click", function(){
+      handleTileClick(i, tile);
+    });
+
+    board.appendChild(tile);
+  }
+
+  setTilesDisabled(true);
+}
   board.innerHTML="";
   const total=MODES[modeSelect.value].colors;
 
