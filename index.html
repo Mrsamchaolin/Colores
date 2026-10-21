@@ -9,667 +9,1387 @@
 
 <style>
 :root{
-  --bg:#090b18;--panel:#13172b;--cyan:#00f5ff;
-  --pink:#ff3cac;--purple:#8b5cf6;--text:#f4f7ff;--muted:#9da8c7;
+  --bg:#090b18;
+  --panel:#13172b;
+  --panel2:#191f38;
+  --cyan:#00f5ff;
+  --pink:#ff36c7;
+  --purple:#8b5cf6;
+  --green:#39ff88;
+  --yellow:#ffe66d;
+  --text:#f4f7ff;
+  --muted:#a6b0d0;
+  --border:rgba(0,245,255,.19);
 }
+
 *{box-sizing:border-box}
-html{min-height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+html{scroll-behavior:smooth}
+
 body{
-  margin:0;min-height:100vh;min-height:100dvh;color:var(--text);
-  background:radial-gradient(ellipse at top,#18254a 0%,transparent 55%),var(--bg);
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  overscroll-behavior-y:contain;
+  margin:0;
+  min-height:100vh;
+  padding:20px 14px 12px;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse at 15% 0%,rgba(0,245,255,.12),transparent 35%),
+    radial-gradient(ellipse at 90% 30%,rgba(255,54,199,.10),transparent 32%),
+    var(--bg);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  overflow-x:hidden;
 }
+
 button,input,select{font:inherit}
-button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid white;outline-offset:3px}
-.container{width:min(940px,94%);margin:auto;padding:clamp(16px,4vw,28px) 0 calc(32px + env(safe-area-inset-bottom))}
-header{text-align:center;margin-bottom:22px}
-h1{font-size:clamp(2rem,8vw,3.7rem);line-height:1.08;margin:0;letter-spacing:clamp(1px,.5vw,2px);color:var(--cyan);text-shadow:0 0 18px #00f5ff70}
-.subtitle{color:var(--muted);margin:8px 0 0}
-.panel{background:#13172bef;border:1px solid #343c60;border-radius:20px;padding:clamp(14px,3vw,20px);margin-bottom:16px;box-shadow:0 8px 30px #0004}
-h2{margin:0 0 14px;font-size:1.25rem}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-select,input{min-height:44px;background:#090d20;border:1px solid #444e75;color:white;border-radius:10px;padding:10px 12px;max-width:100%}
-.controls{justify-content:center}
-.btn{min-height:44px;color:white;background:#252b49;border:1px solid #46517c;border-radius:11px;padding:10px 15px;transition:transform .15s,filter .15s}
-.btn:hover{filter:brightness(1.18)}
-.btn:active{transform:scale(.98)}
-.btn.primary{color:#06101c;font-weight:800;background:linear-gradient(110deg,var(--cyan),#8af7ff);border:none}
-.btn.active{border-color:var(--cyan);box-shadow:0 0 12px #00f5ff35}
-.audio-controls{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
-.stat{text-align:center;padding:12px 8px;background:#090d20;border:1px solid #303958;border-radius:13px;min-width:0}
-.stat strong{display:block;color:var(--cyan);font-size:clamp(1.35rem,5vw,1.7rem);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.stat span{color:var(--muted);font-size:.85rem}
-.status{text-align:center;min-height:48px;color:#e3eaff;margin:12px 0;line-height:1.5}
-.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,2vw,12px);width:min(100%,480px);margin:18px auto}
-.tile{display:block;width:100%;min-width:0;aspect-ratio:1;border:2px solid #ffffff40;border-radius:clamp(12px,3vw,18px);opacity:.9;padding:0;transition:opacity .12s,transform .12s,box-shadow .12s;box-shadow:inset 0 0 18px #ffffff13;user-select:none;-webkit-user-select:none}
-.tile:disabled{cursor:default;pointer-events:none}
-.tile.lit{opacity:1;transform:scale(.96);border-color:white;box-shadow:0 0 25px currentColor,inset 0 0 20px #ffffff66;filter:brightness(1.7)}
-.tile[data-color="0"]{background:#ff3b68;color:#ff3b68}
-.tile[data-color="1"]{background:#00d8ff;color:#00d8ff}
-.tile[data-color="2"]{background:#a855f7;color:#a855f7}
-.tile[data-color="3"]{background:#ffb800;color:#ffb800}
-.tile[data-color="4"]{background:#27e89a;color:#27e89a}
-.tile[data-color="5"]{background:#ff65d8;color:#ff65d8}
-.tile[data-color="6"]{background:#ff713d;color:#ff713d}
-.tile[data-color="7"]{background:#6485ff;color:#6485ff}
-.tile[data-color="8"]{background:#e9ff70;color:#e9ff70}
-.hint{text-align:center;color:var(--muted);font-size:.9rem;line-height:1.5}
-.small{font-size:.85rem;color:var(--muted);line-height:1.5}
-.name-controls input{flex:1 1 150px;min-width:0}
-.name-controls .btn{flex:0 1 auto}
-.leaderboard{list-style:none;margin:0;padding:0}
-.leaderboard li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;border-bottom:1px solid #303958;min-width:0}
-.leaderboard li:last-child{border-bottom:none}
-.player-side{display:flex;align-items:center;gap:7px;min-width:0}
-.rank{color:var(--cyan);font-weight:800;min-width:27px}
-.player-name{overflow-wrap:anywhere;word-break:break-word}
-.score-side{display:flex;align-items:flex-end;flex-direction:column;gap:3px;flex-shrink:0}
-.score{color:#ffe27a;font-weight:800;white-space:nowrap}
-.mode-tag{font-size:.72rem;color:#dbe7ff;background:#252b49;border:1px solid #46517c;border-radius:99px;padding:2px 7px;white-space:nowrap}
-.mode-tag.normal{border-color:#00d8ff;color:#8af7ff}
-.mode-tag.hard{border-color:#ff65d8;color:#ff9ce6}
-footer{text-align:center;color:var(--muted);font-size:.9rem;margin-top:30px;padding:22px 12px;border-top:1px solid #343c60;line-height:1.8}
-footer p{margin:6px 0}
-footer .credits-title{color:var(--cyan);font-weight:800;font-size:1rem}
-footer .credits-names{color:#f4f7ff}
-footer .credits-event{color:#ff65d8;font-weight:700}
+
+button{
+  -webkit-tap-highlight-color:transparent;
+}
+
+.app{
+  width:100%;
+  max-width:760px;
+  margin:0 auto;
+  position:relative;
+}
+
+.header{
+  text-align:center;
+  margin-bottom:22px;
+  animation:slideDown .65s ease both;
+}
+
+.logo{
+  display:inline-block;
+  font-size:clamp(2rem,8vw,3.7rem);
+  line-height:1.15;
+  font-weight:950;
+  letter-spacing:2px;
+  color:white;
+  text-shadow:
+    0 0 8px var(--cyan),
+    0 0 22px rgba(0,245,255,.7),
+    0 0 45px rgba(139,92,246,.35);
+  animation:logoGlow 3s ease-in-out infinite alternate;
+}
+
+.logo span{color:var(--cyan)}
+
+.subtitle{
+  color:var(--muted);
+  margin:9px 0 0;
+  font-size:.95rem;
+}
+
+.panel{
+  background:linear-gradient(145deg,rgba(25,31,56,.97),rgba(15,19,39,.97));
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:19px;
+  margin-bottom:15px;
+  box-shadow:0 12px 35px rgba(0,0,0,.2);
+  position:relative;
+  overflow:hidden;
+}
+
+.panel::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:12%;
+  width:76%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.65;
+}
+
+.settings{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+.field label{
+  display:block;
+  font-size:.83rem;
+  color:var(--muted);
+  margin-bottom:7px;
+}
+
+.field input,.field select{
+  width:100%;
+  min-width:0;
+  border:1px solid rgba(166,176,208,.25);
+  border-radius:12px;
+  background:#0b1022;
+  color:var(--text);
+  padding:12px;
+  outline:none;
+}
+
+.field input:focus,.field select:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(0,245,255,.1);
+}
+
+.audio-controls{
+  display:flex;
+  gap:9px;
+  margin-top:13px;
+}
+
+.btn{
+  border:1px solid rgba(0,245,255,.35);
+  border-radius:12px;
+  padding:11px 14px;
+  color:var(--text);
+  background:rgba(0,245,255,.07);
+  cursor:pointer;
+  transition:transform .18s ease,background .2s ease,box-shadow .2s ease;
+  font-weight:700;
+}
+
+.btn:hover{
+  background:rgba(0,245,255,.15);
+  box-shadow:0 0 18px rgba(0,245,255,.12);
+}
+
+.btn:active{transform:scale(.96)}
+
+.btn:focus-visible,.tile:focus-visible{
+  outline:2px solid white;
+  outline-offset:3px;
+}
+
+.btn.primary{
+  color:#07111c;
+  background:linear-gradient(100deg,var(--cyan),#7dfcff);
+  border-color:transparent;
+  box-shadow:0 0 18px rgba(0,245,255,.19);
+}
+
+.btn.primary:hover{
+  box-shadow:0 0 27px rgba(0,245,255,.4);
+}
+
+.btn.pink{
+  border-color:rgba(255,54,199,.35);
+  background:rgba(255,54,199,.08);
+}
+
+.audio-controls .btn{flex:1}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.stat{
+  text-align:center;
+  padding:14px 6px;
+  background:rgba(19,23,43,.9);
+  border:1px solid var(--border);
+  border-radius:15px;
+  min-width:0;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:.77rem;
+  margin-bottom:6px;
+}
+
+.stat-value{
+  font-size:clamp(1.2rem,5vw,1.8rem);
+  font-weight:900;
+  color:var(--cyan);
+  overflow-wrap:anywhere;
+}
+
+.stat.pop .stat-value{animation:scorePop .42s ease}
+
+.game-panel{text-align:center}
+
+.status{
+  min-height:30px;
+  margin:0 0 6px;
+  font-size:1.02rem;
+  font-weight:800;
+}
+
+.status.ready{color:var(--cyan)}
+.status.good{color:var(--green)}
+.status.bad{color:#ff648c}
+.status.win{color:var(--yellow)}
+
+.hint{
+  margin:0 0 17px;
+  color:var(--muted);
+  font-size:.86rem;
+}
+
+.board{
+  width:100%;
+  max-width:430px;
+  margin:0 auto 18px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.tile{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:1.1;
+  min-width:0;
+  overflow:hidden;
+  border:2px solid rgba(255,255,255,.2);
+  border-radius:18px;
+  background:#20263d;
+  cursor:pointer;
+  opacity:.82;
+  transform:translateZ(0);
+  transition:
+    transform .16s ease,
+    opacity .16s ease,
+    filter .16s ease,
+    box-shadow .16s ease,
+    border-color .16s ease;
+}
+
+.tile::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 45%,rgba(0,0,0,.15));
+  pointer-events:none;
+}
+
+.tile::after{
+  content:"";
+  position:absolute;
+  top:-70%;
+  left:-70%;
+  width:45%;
+  height:240%;
+  background:rgba(255,255,255,.2);
+  transform:rotate(25deg);
+  opacity:0;
+  pointer-events:none;
+}
+
+.tile:disabled{cursor:default}
+
+.tile:not(:disabled):hover{
+  transform:translateY(-2px) scale(1.025);
+  opacity:1;
+  filter:brightness(1.15);
+}
+
+.tile.lit{
+  opacity:1;
+  transform:scale(1.055);
+  filter:brightness(1.45);
+  border-color:white;
+  z-index:2;
+  animation:tileFlash .48s ease;
+}
+
+.tile.lit::after{animation:shine .48s ease}
+
+.tile.correct{
+  animation:correctPulse .42s ease;
+}
+
+.tile.wrong{
+  animation:shake .36s ease;
+  filter:brightness(.7);
+}
+
+.tile:disabled:not(.lit){opacity:.76}
+
+.game-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.game-actions .btn{min-width:135px}
+
+.progress-wrap{
+  max-width:430px;
+  margin:0 auto 17px;
+  text-align:left;
+}
+
+.progress-top{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  color:var(--muted);
+  font-size:.76rem;
+  margin-bottom:7px;
+}
+
+.progress{
+  height:7px;
+  border-radius:20px;
+  background:#080c1a;
+  overflow:hidden;
+}
+
+.progress-bar{
+  width:0%;
+  height:100%;
+  border-radius:20px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));
+  transition:width .3s ease;
+  box-shadow:0 0 12px rgba(0,245,255,.4);
+}
+
+.section-title{
+  margin:0 0 13px;
+  font-size:1.1rem;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.section-title .accent{color:var(--cyan)}
+
+.leaderboard{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.score-row{
+  display:grid;
+  grid-template-columns:37px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:12px;
+  background:rgba(7,11,27,.65);
+  border:1px solid rgba(166,176,208,.1);
+  animation:slideUp .35s ease both;
+}
+
+.rank{
+  width:31px;
+  height:31px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:rgba(0,245,255,.08);
+  color:var(--cyan);
+  font-weight:900;
+}
+
+.score-row:nth-child(1) .rank{
+  color:#15101c;
+  background:linear-gradient(135deg,#ffe66d,#ffb347);
+}
+
+.score-row:nth-child(2) .rank{
+  color:#101522;
+  background:#dce7f5;
+}
+
+.score-row:nth-child(3) .rank{
+  color:#21130a;
+  background:#d69b70;
+}
+
+.player-info{min-width:0}
+
+.player-name{
+  font-weight:800;
+  overflow-wrap:anywhere;
+}
+
+.player-mode{
+  font-size:.75rem;
+  color:var(--muted);
+  margin-top:2px;
+}
+
+.player-score{
+  font-size:1.05rem;
+  font-weight:900;
+  color:var(--cyan);
+  white-space:nowrap;
+}
+
+.small-note{
+  font-size:.8rem;
+  color:var(--muted);
+  line-height:1.5;
+  margin:12px 0 0;
+}
+
+#toast{
+  position:fixed;
+  z-index:20;
+  left:50%;
+  bottom:24px;
+  transform:translate(-50%,20px);
+  background:#171f36;
+  border:1px solid rgba(0,245,255,.4);
+  color:white;
+  border-radius:12px;
+  padding:12px 17px;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);
+  opacity:0;
+  pointer-events:none;
+  max-width:calc(100vw - 28px);
+  text-align:center;
+  transition:opacity .2s ease,transform .2s ease;
+}
+
+#toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+#fxLayer{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.particle{
+  position:absolute;
+  width:8px;
+  height:8px;
+  border-radius:2px;
+  animation:particleFly var(--duration,900ms) ease-out forwards;
+  box-shadow:0 0 9px currentColor;
+}
+
+.footer{
+  text-align:center;
+  padding:17px 8px 5px;
+  color:var(--muted);
+  font-size:.8rem;
+  line-height:1.7;
+}
+
+.footer strong{color:var(--cyan)}
+
+@keyframes logoGlow{
+  from{filter:brightness(.94)}
+  to{filter:brightness(1.15)}
+}
+
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-15px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(9px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes tileFlash{
+  0%{transform:scale(1)}
+  45%{transform:scale(1.07)}
+  100%{transform:scale(1.055)}
+}
+
+@keyframes shine{
+  0%{left:-70%;opacity:0}
+  25%{opacity:1}
+  100%{left:140%;opacity:0}
+}
+
+@keyframes correctPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.07)}
+}
+
+@keyframes scorePop{
+  0%{transform:scale(1)}
+  45%{transform:scale(1.28);text-shadow:0 0 20px var(--cyan)}
+  100%{transform:scale(1)}
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+
+@keyframes particleFly{
+  0%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(240deg) scale(.2)}
+}
 
 @media(max-width:520px){
-  .container{width:calc(100% - 20px);padding-top:16px}
-  header{margin-bottom:16px}
-  .panel{border-radius:16px;margin-bottom:12px}
-  .controls{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px}
-  .controls label{font-size:.95rem}
-  .controls select{width:100%;min-width:0}
-  .controls #startBtn{grid-column:1/-1;width:100%}
-  .audio-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .audio-controls .btn{padding:10px 7px;font-size:.9rem}
-  .stats{gap:7px;margin:14px 0}
-  .stat{padding:10px 4px}
-  .stat span{font-size:.76rem}
-  .board{gap:8px;margin:14px auto}
-  .tile{border-radius:12px;min-height:0}
-  .name-controls{display:grid;grid-template-columns:1fr 1fr}
-  .name-controls input{grid-column:1/-1;width:100%}
-  .name-controls .btn{width:100%;padding:10px 7px;font-size:.9rem}
-  .leaderboard li{padding:11px 1px}
+  body{padding:15px 10px 10px}
+  .panel{padding:15px;border-radius:18px}
+  .settings{gap:10px}
+  .field input,.field select{padding:11px 9px;font-size:.92rem}
+  .stats{gap:7px}
+  .stat{padding:12px 4px;border-radius:12px}
+  .board{gap:9px}
+  .tile{border-radius:14px}
+  .game-actions .btn{flex:1;min-width:0}
+  .audio-controls .btn{padding:10px 6px;font-size:.85rem}
 }
-@media(max-width:350px){
-  .container{width:calc(100% - 14px)}
-  .panel{padding:12px}
-  .audio-controls{grid-template-columns:1fr}
-  .leaderboard li{gap:6px}
-  .mode-tag{font-size:.66rem;padding:2px 5px}
-}
+
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
 }
 </style>
 </head>
 
 <body>
-<main class="container">
-  <header>
-    <h1>NEON MEMORY</h1>
-    <p class="subtitle">🧠 Memoriza los colores. Supera tu récord.</p>
+<div id="fxLayer" aria-hidden="true"></div>
+
+<main class="app">
+  <header class="header">
+    <div class="logo">NEON <span>MEMORY</span></div>
+    <p class="subtitle">🧠 Recuerda los colores. Supera tu récord.</p>
   </header>
 
   <section class="panel">
-    <div class="row controls">
-      <label for="mode">Dificultad:</label>
-      <select id="mode">
-        <option value="easy">Fácil</option>
-        <option value="normal" selected>Normal</option>
-        <option value="hard">Difícil</option>
-      </select>
-      <button id="startBtn" class="btn primary">▶ Jugar</button>
+    <div class="settings">
+      <div class="field">
+        <label for="playerName">👤 Tu nombre</label>
+        <input id="playerName" type="text" maxlength="16" placeholder="Escribe tu nombre" autocomplete="nickname">
+      </div>
+
+      <div class="field">
+        <label for="difficulty">🎮 Dificultad</label>
+        <select id="difficulty">
+          <option value="easy">Fácil · 4 colores</option>
+          <option value="normal" selected>Normal · 6 colores</option>
+          <option value="hard">Difícil · 9 colores</option>
+        </select>
+      </div>
     </div>
 
     <div class="audio-controls">
-      <button id="soundBtn" class="btn active" aria-pressed="true">🔊 Sonidos: ON</button>
-      <button id="musicBtn" class="btn active" aria-pressed="true">🎵 Música: ON</button>
+      <button class="btn" id="soundBtn" type="button">🔊 Sonidos: ON</button>
+      <button class="btn" id="musicBtn" type="button">🎵 Música: OFF</button>
     </div>
-    <p class="hint">La música comienza después de pulsar un botón.</p>
+  </section>
 
-    <div class="stats">
-      <div class="stat"><strong id="round">0</strong><span>Ronda</span></div>
-      <div class="stat"><strong id="best">0</strong><span>Récord (pts)</span></div>
-      <div class="stat"><strong id="points">0</strong><span>Puntos</span></div>
+  <section class="stats" aria-label="Estadísticas del juego">
+    <div class="stat" id="roundStat">
+      <div class="stat-label">RONDA</div>
+      <div class="stat-value" id="roundValue">0</div>
+    </div>
+    <div class="stat" id="scoreStat">
+      <div class="stat-label">PUNTOS</div>
+      <div class="stat-value" id="scoreValue">0</div>
+    </div>
+    <div class="stat" id="recordStat">
+      <div class="stat-label">RÉCORD LOCAL</div>
+      <div class="stat-value" id="recordValue">0</div>
+    </div>
+  </section>
+
+  <section class="panel game-panel">
+    <p class="status ready" id="status" aria-live="polite">¿Listo para jugar?</p>
+    <p class="hint" id="hint">Presiona empezar y memoriza la secuencia.</p>
+
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span>Progreso de la secuencia</span>
+        <span id="progressText">0 / 0</span>
+      </div>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
     </div>
 
-    <p id="status" class="status" aria-live="polite">Pulsa «Jugar» para comenzar.</p>
-    <div id="board" class="board" aria-label="Tablero de colores"></div>
-    <p class="hint">Observa la secuencia y repítela en el mismo orden.</p>
+    <div class="board" id="board" aria-label="Tablero de colores"></div>
+
+    <div class="game-actions">
+      <button class="btn primary" id="startBtn" type="button">▶ Empezar juego</button>
+      <button class="btn pink" id="restartBtn" type="button">↻ Reiniciar</button>
+    </div>
   </section>
 
   <section class="panel">
-    <h2>🏆 Clasificación mundial</h2>
-    <p class="small">Escribe tu apodo para guardar tus puntuaciones. Normal y Difícil dan más puntos.</p>
-    <div class="row name-controls">
-      <input id="nickname" maxlength="16" placeholder="Tu apodo" autocomplete="nickname" aria-label="Tu apodo">
-      <button id="saveNameBtn" class="btn">Guardar apodo</button>
-      <button id="refreshBtn" class="btn">↻ Actualizar</button>
+    <h2 class="section-title"><span class="accent">🏆</span> Tabla de posiciones</h2>
+    <div class="leaderboard" id="leaderboard" aria-live="polite">
+      <p class="small-note">Cargando puntuaciones...</p>
     </div>
-    <p id="connection" class="small" aria-live="polite">Conectando con la clasificación...</p>
-    <ol id="leaderboard" class="leaderboard"><li>Cargando puntuaciones...</li></ol>
+    <p class="small-note" id="leaderboardStatus">Las mejores puntuaciones se guardan en línea.</p>
+    <button class="btn" id="refreshBtn" type="button" style="width:100%;margin-top:12px">↻ Actualizar posiciones</button>
   </section>
 
-  <footer>
-    <p>🎮 NEON MEMORY · Juego de memoria de colores</p>
-    <p class="credits-title">CREADO POR</p>
-    <p class="credits-names">Samuel Ramirez, Zaray Ramos, Bonilla Fong y Juan David Perdomo</p>
-    <p class="credits-event">Grado 10° · Feria de la Ciencia 🔬</p>
+  <footer class="footer">
+    Creado por <strong>Samuel Ramirez, Zaray Ramos, Bonilla Fong y Juan David Perdomo</strong><br>
+    Grado 10° · Feria de la Ciencia 🔬<br>
+    <span>Neon Memory © 2026</span>
   </footer>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div id="toast" role="status" aria-live="polite"></div>
+
 <script>
 "use strict";
 
-/* SELECTOR: SE DEFINE ANTES DE USARLO */
+/* =====================================================
+   NEON MEMORY
+   Juego de memoria con efectos, audio y Supabase.
+   buildBoard() se declara una sola vez.
+   ===================================================== */
+
 const $ = id => document.getElementById(id);
 
-/* CONFIGURACIÓN DE SUPABASE */
 const SUPABASE_URL = "https://ckspckfzzeguqyfghkyz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_qE2xjMbqzykV-NcL9p4AlQ_BT56-okJ";
 
-/* SONIDOS Y MÚSICA */
-const SOUND_KEY = "neon-memory-sound-v1";
-const MUSIC_KEY = "neon-memory-music-v1";
+const COLORS = [
+  "#00f5ff",
+  "#ff36c7",
+  "#39ff88",
+  "#ffe66d",
+  "#8b5cf6",
+  "#ff7043",
+  "#4d7cff",
+  "#ff4d6d",
+  "#b6ff00"
+];
 
-let soundOn = localStorage.getItem(SOUND_KEY) !== "off";
-let musicOn = localStorage.getItem(MUSIC_KEY) !== "off";
-let audioCtx = null;
-let masterGain = null;
-let musicTimer = null;
-let musicStep = 0;
+const MODE_CONFIG = {
+  easy:   { count:4, points:10, label:"Fácil" },
+  normal: { count:6, points:20, label:"Normal" },
+  hard:   { count:9, points:30, label:"Difícil" }
+};
 
-function initAudio(){
-  const AudioClass = window.AudioContext || window.webkitAudioContext;
-  if(!AudioClass) return false;
+const state = {
+  mode:"normal",
+  sequence:[],
+  inputIndex:0,
+  round:0,
+  score:0,
+  running:false,
+  acceptingInput:false,
+  gameOver:false,
+  sounds:true,
+  music:false,
+  audioContext:null,
+  musicTimer:null,
+  musicStep:0,
+  lastSaved:false,
+  roundTimer:null,
+  playbackToken:0
+};
 
-  if(!audioCtx){
-    audioCtx = new AudioClass();
-    masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.20;
-    masterGain.connect(audioCtx.destination);
+let toastTimer = null;
+
+/* ---------- Utilidades ---------- */
+
+function safeText(value){
+  return String(value ?? "");
+}
+
+function showToast(message){
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2300);
+}
+
+function setStatus(message, type="ready"){
+  const status = $("status");
+  status.textContent = message;
+  status.className = "status " + type;
+}
+
+function setHint(message){
+  $("hint").textContent = message;
+}
+
+function updateStats(){
+  $("roundValue").textContent = state.round;
+  $("scoreValue").textContent = state.score;
+
+  const best = getLocalRecord();
+  $("recordValue").textContent = best;
+
+  $("roundStat").classList.remove("pop");
+  $("scoreStat").classList.remove("pop");
+
+  void $("scoreStat").offsetWidth;
+
+  $("roundStat").classList.add("pop");
+  $("scoreStat").classList.add("pop");
+}
+
+function getLocalRecord(){
+  try{
+    return Number(localStorage.getItem("neonMemoryRecord") || 0);
+  }catch(error){
+    return 0;
+  }
+}
+
+function saveLocalRecord(){
+  try{
+    const current = getLocalRecord();
+
+    if(state.score > current){
+      localStorage.setItem("neonMemoryRecord", String(state.score));
+    }
+  }catch(error){
+    // El juego sigue funcionando si el navegador bloquea el almacenamiento.
   }
 
-  if(audioCtx.state === "suspended") audioCtx.resume().catch(()=>{});
-  return true;
+  $("recordValue").textContent = getLocalRecord();
 }
 
-function tone(freq,duration=0.12,type="sine",volume=0.20,delay=0){
-  if(!soundOn || !initAudio()) return;
+function updateProgress(){
+  const total = state.sequence.length;
+  const current = state.inputIndex;
 
-  const start = audioCtx.currentTime + delay;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq,start);
-  gain.gain.setValueAtTime(0.0001,start);
-  gain.gain.exponentialRampToValueAtTime(Math.max(0.0002,volume),start+0.012);
-  gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
-  osc.connect(gain);
-  gain.connect(masterGain);
-  osc.start(start);
-  osc.stop(start+duration+0.03);
+  $("progressText").textContent = current + " / " + total;
+  $("progressBar").style.width = total
+    ? Math.min(100, current / total * 100) + "%"
+    : "0%";
 }
 
-function playColorSound(index){
-  const notes=[262,330,392,440,523,587,659,784,880];
-  tone(notes[index]||440,0.14,"sine",0.24);
+function wait(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/* ---------- Audio: efectos de sonido ---------- */
+
+function getAudioContext(){
+  if(!state.audioContext){
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+    if(!AudioContextClass) return null;
+
+    state.audioContext = new AudioContextClass();
+  }
+
+  if(state.audioContext.state === "suspended"){
+    state.audioContext.resume().catch(() => {});
+  }
+
+  return state.audioContext;
+}
+
+function playTone(frequency=440, duration=.12, wave="sine", volume=.055){
+  if(!state.sounds) return;
+
+  const context = getAudioContext();
+  if(!context) return;
+
+  try{
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    oscillator.type = wave;
+    oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+
+    gain.gain.setValueAtTime(volume, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+      .001,
+      context.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+
+    oscillator.start();
+    oscillator.stop(context.currentTime + duration);
+  }catch(error){
+    // El juego no depende del audio.
+  }
+}
+
 function playCorrectSound(){
-  [523,659,784].forEach((n,i)=>tone(n,0.16,"triangle",0.18,i*0.09));
-}
-function playWrongSound(){
-  tone(220,0.25,"sawtooth",0.16);
-  tone(165,0.35,"sawtooth",0.12,0.15);
-}
-function playStartSound(){
-  [392,523,659].forEach((n,i)=>tone(n,0.12,"triangle",0.14,i*0.07));
-}
-function playGameOverSound(){
-  [392,330,262,196].forEach((n,i)=>tone(n,0.24,"triangle",0.18,i*0.16));
+  playTone(660,.09,"sine",.045);
 }
 
-function stopMusic(){
-  if(musicTimer!==null){
-    clearInterval(musicTimer);
-    musicTimer=null;
+function playWrongSound(){
+  playTone(180,.22,"sawtooth",.05);
+}
+
+function playRoundSound(){
+  playTone(520,.09,"sine",.045);
+  setTimeout(() => playTone(780,.13,"sine",.04),100);
+}
+
+function playWinSound(){
+  [523,659,784,1047].forEach((frequency,index) => {
+    setTimeout(() => playTone(frequency,.2,"triangle",.045),index*100);
+  });
+}
+
+/* ---------- Música de fondo ---------- */
+
+const musicNotes = [261.63,329.63,392,329.63,293.66,349.23,440,392];
+
+function musicBeat(){
+  if(!state.music) return;
+
+  const frequency = musicNotes[state.musicStep % musicNotes.length];
+  state.musicStep++;
+
+  const context = getAudioContext();
+  if(!context) return;
+
+  try{
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    oscillator.type = "triangle";
+    oscillator.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(.0001,context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.018,context.currentTime+.03);
+    gain.gain.exponentialRampToValueAtTime(.0001,context.currentTime+.28);
+
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+
+    oscillator.start();
+    oscillator.stop(context.currentTime+.3);
+  }catch(error){
+    // La música es opcional.
   }
 }
 
 function startMusic(){
   stopMusic();
-  if(!musicOn || !initAudio()) return;
-
-  const melody=[523,659,784,659,587,659,880,784,523,659,784,1046,880,784,659,587];
-
-  musicTimer=setInterval(()=>{
-    if(!musicOn || !audioCtx || audioCtx.state!=="running") return;
-
-    const note=melody[musicStep%melody.length];
-    const volume=musicStep%4===0?0.075:0.035;
-    const osc=audioCtx.createOscillator();
-    const gain=audioCtx.createGain();
-    const now=audioCtx.currentTime;
-
-    osc.type="sine";
-    osc.frequency.setValueAtTime(note,now);
-    gain.gain.setValueAtTime(0.0001,now);
-    gain.gain.exponentialRampToValueAtTime(volume,now+0.025);
-    gain.gain.exponentialRampToValueAtTime(0.0001,now+0.24);
-    osc.connect(gain);
-    gain.connect(masterGain);
-    osc.start(now);
-    osc.stop(now+0.26);
-    musicStep++;
-  },260);
+  state.music = true;
+  musicBeat();
+  state.musicTimer = setInterval(musicBeat,360);
+  $("musicBtn").textContent = "🎵 Música: ON";
 }
 
-function updateAudioButtons(){
-  const sb=$("soundBtn");
-  const mb=$("musicBtn");
-
-  sb.textContent=soundOn?"🔊 Sonidos: ON":"🔇 Sonidos: OFF";
-  sb.classList.toggle("active",soundOn);
-  sb.setAttribute("aria-pressed",String(soundOn));
-
-  mb.textContent=musicOn?"🎵 Música: ON":"🎵 Música: OFF";
-  mb.classList.toggle("active",musicOn);
-  mb.setAttribute("aria-pressed",String(musicOn));
-}
-
-$("soundBtn").addEventListener("click",()=>{
-  soundOn=!soundOn;
-  localStorage.setItem(SOUND_KEY,soundOn?"on":"off");
-  if(soundOn){
-    initAudio();
-    tone(659,0.12,"sine",0.18);
+function stopMusic(){
+  if(state.musicTimer !== null){
+    clearInterval(state.musicTimer);
+    state.musicTimer = null;
   }
-  updateAudioButtons();
-});
 
-$("musicBtn").addEventListener("click",()=>{
-  musicOn=!musicOn;
-  localStorage.setItem(MUSIC_KEY,musicOn?"on":"off");
-  if(musicOn){
-    initAudio();
-    startMusic();
-  }else{
-    stopMusic();
-  }
-  updateAudioButtons();
-});
-
-/* MODOS Y TABLERO */
-const MODES={
-  easy:{colors:4,speed:650,label:"Fácil",pointsPerRound:10},
-  normal:{colors:6,speed:480,label:"Normal",pointsPerRound:20},
-  hard:{colors:9,speed:330,label:"Difícil",pointsPerRound:30}
-};
-
-const board=$("board");
-const modeSelect=$("mode");
-const startBtn=$("startBtn");
-const statusEl=$("status");
-
-const colors=[
-  "#ff3b68","#00d8ff","#a855f7","#ffb800","#27e89a",
-  "#ff65d8","#ff713d","#6485ff","#e9ff70"
-];
-
-let sequence=[];
-let inputPosition=0;
-let round=0;
-let points=0;
-let best=0;
-let acceptingInput=false;
-let gameRunning=false;
-let runId=0;
-
-function bestKey(){
-  return "neon-memory-best-v2-"+modeSelect.value;
+  state.music = false;
+  $("musicBtn").textContent = "🎵 Música: OFF";
 }
 
-function loadBest(){
-  best=Number(localStorage.getItem(bestKey()))||0;
-  $("best").textContent=best;
-}
+/* ---------- Tablero ---------- */
 
-function updateStats(){
-  $("round").textContent=round;
-  $("points").textContent=points;
-  $("best").textContent=best;
-}
-
-function setStatus(message){
-  statusEl.textContent=message;
-}
-
-/* FUNCIÓN CORREGIDA: CREA LOS COLORES UNA SOLA VEZ */
 function buildBoard(){
-  const total=MODES[modeSelect.value].colors;
+  const board = $("board");
+  board.replaceChildren();
 
-  board.innerHTML="";
-  board.style.display="grid";
-  board.style.gridTemplateColumns=total===4
-    ?"repeat(2,minmax(0,1fr))"
-    :"repeat(3,minmax(0,1fr))";
+  const count = MODE_CONFIG[state.mode].count;
+  board.style.gridTemplateColumns = count === 4
+    ? "repeat(2,minmax(0,1fr))"
+    : "repeat(3,minmax(0,1fr))";
 
-  for(let i=0;i<total;i++){
-    const tile=document.createElement("button");
+  for(let i=0;i<count;i++){
+    const tile = document.createElement("button");
 
-    tile.type="button";
-    tile.className="tile";
-    tile.dataset.color=String(i);
-    tile.setAttribute("aria-label","Color "+(i+1));
+    tile.type = "button";
+    tile.className = "tile";
+    tile.dataset.index = String(i);
+    tile.style.backgroundColor = COLORS[i];
+    tile.style.boxShadow = "0 0 12px " + COLORS[i] + "22";
+    tile.setAttribute("aria-label","Color " + (i+1));
+    tile.disabled = true;
 
-    /* Color visible para cada botón */
-    tile.style.backgroundColor=colors[i];
-    tile.style.color=colors[i];
-
-    tile.addEventListener("click",()=>{
-      handleTileClick(i,tile);
-    });
+    tile.addEventListener("click", () => handleTileClick(i));
 
     board.appendChild(tile);
   }
+}
 
-  setTilesDisabled(true);
+function getTile(index){
+  return $("board").querySelector('[data-index="' + index + '"]');
 }
 
 function setTilesDisabled(disabled){
-  board.querySelectorAll(".tile").forEach(tile=>{
-    tile.disabled=disabled;
+  $("board").querySelectorAll(".tile").forEach(tile => {
+    tile.disabled = disabled;
   });
 }
 
-function sleep(ms){
-  return new Promise(resolve=>setTimeout(resolve,ms));
+function flashTile(index, duration=350){
+  return new Promise(resolve => {
+    const tile = getTile(index);
+
+    if(!tile){
+      resolve();
+      return;
+    }
+
+    tile.classList.remove("lit");
+    void tile.offsetWidth;
+    tile.classList.add("lit");
+
+    const colorIndex = Number(tile.dataset.index);
+    playTone(260 + colorIndex * 65,.11,"sine",.035);
+
+    setTimeout(() => {
+      tile.classList.remove("lit");
+      resolve();
+    },duration);
+  });
 }
 
-async function flashTile(index,duration,token){
-  if(token!==runId) return;
+/* ---------- Efectos visuales ---------- */
 
-  const tile=board.querySelector('[data-color="'+index+'"]');
-  if(!tile) return;
+function createParticles(x,y,count=22){
+  const layer = $("fxLayer");
+  const fragment = document.createDocumentFragment();
 
-  tile.classList.add("lit");
-  playColorSound(index);
-  await sleep(duration);
-  tile.classList.remove("lit");
-}
+  for(let i=0;i<count;i++){
+    const particle = document.createElement("span");
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 45 + Math.random() * 115;
+    const color = COLORS[Math.floor(Math.random() * COLORS.length)];
 
-async function showSequence(token){
-  acceptingInput=false;
-  setTilesDisabled(true);
-  setStatus("👀 ¡Mira bien la secuencia!");
+    particle.className = "particle";
+    particle.style.left = x + "px";
+    particle.style.top = y + "px";
+    particle.style.backgroundColor = color;
+    particle.style.color = color;
+    particle.style.setProperty("--dx",Math.cos(angle)*distance + "px");
+    particle.style.setProperty("--dy",Math.sin(angle)*distance + "px");
+    particle.style.setProperty("--duration",(650 + Math.random()*450) + "ms");
 
-  await sleep(450);
-  if(token!==runId) return;
-
-  const speed=MODES[modeSelect.value].speed;
-
-  for(const index of sequence){
-    if(token!==runId) return;
-    await flashTile(index,speed*0.65,token);
-    await sleep(speed*0.30);
+    fragment.appendChild(particle);
+    particle.addEventListener("animationend",() => particle.remove(),{once:true});
   }
 
-  if(token!==runId) return;
-
-  acceptingInput=true;
-  setTilesDisabled(false);
-  setStatus("🧠 ¡Tu turno! Repite los colores en orden.");
+  layer.appendChild(fragment);
 }
 
-function nextRound(){
-  const token=runId;
-  round++;
-  inputPosition=0;
-  sequence.push(Math.floor(Math.random()*MODES[modeSelect.value].colors));
-  updateStats();
-  showSequence(token);
+function burstAtElement(element,count=22){
+  if(!element) return;
+
+  const rect = element.getBoundingClientRect();
+  createParticles(rect.left+rect.width/2,rect.top+rect.height/2,count);
+}
+
+function celebrate(){
+  const board = $("board");
+  const rect = board.getBoundingClientRect();
+
+  createParticles(rect.left+rect.width/2,rect.top+rect.height/2,45);
+  playWinSound();
+}
+
+function showCorrectTile(tile){
+  if(!tile) return;
+
+  tile.classList.remove("correct");
+  void tile.offsetWidth;
+  tile.classList.add("correct");
+
+  setTimeout(() => tile.classList.remove("correct"),450);
+}
+
+/* ---------- Lógica del juego ---------- */
+
+function cancelRoundTimer(){
+  if(state.roundTimer !== null){
+    clearTimeout(state.roundTimer);
+    state.roundTimer = null;
+  }
+
+  state.playbackToken++;
 }
 
 function startGame(){
-  runId++;
-  sequence=[];
-  inputPosition=0;
-  round=0;
-  points=0;
-  gameRunning=true;
-  acceptingInput=false;
+  cancelRoundTimer();
 
-  initAudio();
-  if(musicOn) startMusic();
+  state.mode = $("difficulty").value;
+  state.sequence = [];
+  state.inputIndex = 0;
+  state.round = 0;
+  state.score = 0;
+  state.running = true;
+  state.acceptingInput = false;
+  state.gameOver = false;
+  state.lastSaved = false;
 
-  playStartSound();
-  startBtn.textContent="↻ Reiniciar";
+  buildBoard();
   updateStats();
+  updateProgress();
+
+  $("startBtn").textContent = "▶ Juego en curso";
+  setStatus("¡Presta atención!", "ready");
+  setHint("Observa los colores y recuerda el orden.");
+
   nextRound();
 }
 
-function handleTileClick(index,tile){
-  if(!acceptingInput || !gameRunning) return;
+async function nextRound(){
+  if(!state.running || state.gameOver) return;
 
-  tile.classList.add("lit");
-  setTimeout(()=>tile.classList.remove("lit"),130);
-  playColorSound(index);
+  cancelRoundTimer();
+  const token = state.playbackToken;
 
-  if(sequence[inputPosition]!==index){
+  state.round++;
+  state.inputIndex = 0;
+
+  const count = MODE_CONFIG[state.mode].count;
+  state.sequence.push(Math.floor(Math.random()*count));
+
+  updateStats();
+  updateProgress();
+
+  setStatus("Ronda " + state.round, "ready");
+  setHint("Memoriza la secuencia...");
+
+  setTilesDisabled(true);
+
+  await wait(350);
+
+  for(const index of state.sequence){
+    if(token !== state.playbackToken || !state.running) return;
+
+    await flashTile(index,360);
+    await wait(160);
+  }
+
+  if(token !== state.playbackToken || !state.running) return;
+
+  state.acceptingInput = true;
+  setTilesDisabled(false);
+
+  setStatus("¡Tu turno!", "good");
+  setHint("Repite la secuencia en el mismo orden.");
+  updateProgress();
+}
+
+function handleTileClick(index){
+  if(!state.running || !state.acceptingInput || state.gameOver) return;
+
+  const tile = getTile(index);
+  if(!tile) return;
+
+  burstAtElement(tile,7);
+  playTone(330 + index*55,.08,"sine",.035);
+
+  if(index !== state.sequence[state.inputIndex]){
+    tile.classList.remove("wrong");
+    void tile.offsetWidth;
+    tile.classList.add("wrong");
+
+    playWrongSound();
     gameOver();
     return;
   }
 
-  inputPosition++;
+  showCorrectTile(tile);
+  playCorrectSound();
 
-  if(inputPosition===sequence.length){
-    acceptingInput=false;
+  state.inputIndex++;
+  updateProgress();
+
+  if(state.inputIndex === state.sequence.length){
+    state.acceptingInput = false;
     setTilesDisabled(true);
 
-    const mode=MODES[modeSelect.value];
-    points=round*mode.pointsPerRound;
+    const points = MODE_CONFIG[state.mode].points;
+    state.score += points;
 
-    if(points>best){
-      best=points;
-      localStorage.setItem(bestKey(),String(best));
-    }
-
+    saveLocalRecord();
     updateStats();
-    playCorrectSound();
-    setStatus("✨ ¡Perfecto! Preparando la siguiente ronda...");
 
-    const token=runId;
-    setTimeout(()=>{
-      if(token===runId && gameRunning) nextRound();
-    },700);
+    setStatus("¡Secuencia correcta! +" + points + " puntos", "win");
+    setHint("¡Bien hecho! Preparando la siguiente ronda...");
+
+    burstAtElement($("scoreStat"),18);
+    playRoundSound();
+
+    state.roundTimer = setTimeout(() => {
+      nextRound();
+    },900);
   }
 }
 
-function gameOver(){
-  acceptingInput=false;
-  gameRunning=false;
+async function gameOver(){
+  if(state.gameOver) return;
+
+  state.gameOver = true;
+  state.running = false;
+  state.acceptingInput = false;
+
+  cancelRoundTimer();
   setTilesDisabled(true);
 
-  playWrongSound();
-  setTimeout(()=>playGameOverSound(),350);
+  $("startBtn").textContent = "▶ Jugar otra vez";
 
-  const finalPoints=points;
-  const mode=modeSelect.value;
+  setStatus("¡Fin del juego!", "bad");
+  setHint("Llegaste a la ronda " + state.round + ". ¡Inténtalo de nuevo!");
 
-  setStatus(
-    "💥 ¡Fin de la partida! Llegaste a la ronda "+
-    round+". Puntuación: "+finalPoints+" puntos."
-  );
-
-  startBtn.textContent="▶ Jugar otra vez";
-
-  const nickname=$("nickname").value.trim();
-  if(nickname && finalPoints>0){
-    submitScore(nickname,finalPoints,mode);
-  }
-}
-
-modeSelect.addEventListener("change",()=>{
-  runId++;
-  gameRunning=false;
-  acceptingInput=false;
-  sequence=[];
-  round=0;
-  points=0;
-
-  startBtn.textContent="▶ Jugar";
-  buildBoard();
-  loadBest();
+  saveLocalRecord();
   updateStats();
 
-  setStatus("Modo "+MODES[modeSelect.value].label+". Pulsa «Jugar» para comenzar.");
-});
+  burstAtElement($("scoreStat"),14);
 
-startBtn.addEventListener("click",startGame);
-
-/* APODO */
-$("nickname").value=localStorage.getItem("neon-memory-player-v1")||"";
-
-$("saveNameBtn").addEventListener("click",()=>{
-  const name=$("nickname").value.trim();
-
-  if(!name){
-    setStatus("Escribe primero tu apodo.");
-    $("nickname").focus();
-    return;
+  if(state.score > 0){
+    await saveScoreToSupabase();
   }
 
-  if(name.length>16){
-    setStatus("Tu apodo debe tener máximo 16 caracteres.");
-    return;
+  if(state.score > 0){
+    showToast("Partida terminada · " + state.score + " puntos");
+  }else{
+    showToast("¡No te rindas! Inténtalo otra vez.");
   }
-
-  localStorage.setItem("neon-memory-player-v1",name);
-  setStatus("✅ Apodo guardado: "+name);
-});
-
-/* CLASIFICACIÓN SUPABASE */
-let supabaseClient=null;
-
-try{
-  if(window.supabase && SUPABASE_URL && SUPABASE_KEY){
-    supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  }
-}catch(error){
-  console.error("No se pudo iniciar Supabase:",error);
 }
 
-function modeLabel(mode){
-  return MODES[mode]?.label||String(mode||"Modo");
+function restartGame(){
+  startGame();
+}
+
+/* ---------- Supabase: guardar y consultar ---------- */
+
+async function saveScoreToSupabase(){
+  if(state.lastSaved || state.score <= 0) return;
+
+  state.lastSaved = true;
+
+  const player = ($("playerName").value.trim() || "Jugador").slice(0,16);
+  const score = Math.min(10000,Math.max(1,Math.round(state.score)));
+  const mode = state.mode;
+
+  try{
+    const response = await fetch(
+      SUPABASE_URL + "/rest/v1/memory_scores",
+      {
+        method:"POST",
+        headers:{
+          "apikey":SUPABASE_KEY,
+          "Authorization":"Bearer " + SUPABASE_KEY,
+          "Content-Type":"application/json",
+          "Prefer":"return=minimal"
+        },
+        body:JSON.stringify({player,score,mode})
+      }
+    );
+
+    if(!response.ok){
+      const details = await response.text();
+      console.error("Error al guardar puntuación en Supabase:",details);
+      $("leaderboardStatus").textContent =
+        "No se pudo guardar en línea. Revisa la conexión o los permisos de Supabase.";
+      return;
+    }
+
+    $("leaderboardStatus").textContent = "¡Puntuación guardada en línea!";
+    await loadLeaderboard();
+  }catch(error){
+    console.error("No se pudo conectar con Supabase:",error);
+    $("leaderboardStatus").textContent =
+      "Sin conexión con Supabase. Tu récord local sigue guardado.";
+  }
 }
 
 async function loadLeaderboard(){
-  const list=$("leaderboard");
-  const connection=$("connection");
-
-  if(!supabaseClient){
-    connection.textContent="⚠️ No se pudo iniciar la conexión.";
-    list.innerHTML="<li>Revisa la configuración de Supabase.</li>";
-    return;
-  }
-
-  connection.textContent="Conectando...";
-  list.innerHTML="<li>Cargando puntuaciones...</li>";
+  const container = $("leaderboard");
+  $("leaderboardStatus").textContent = "Actualizando puntuaciones...";
 
   try{
-    const {data,error}=await supabaseClient
-      .from("memory_scores")
-      .select("player, score, mode, created_at")
-      .order("score",{ascending:false})
-      .order("created_at",{ascending:true})
-      .limit(10);
+    const url = SUPABASE_URL +
+      "/rest/v1/memory_scores" +
+      "?select=player,score,mode,created_at" +
+      "&order=score.desc,created_at.asc" +
+      "&limit=10";
 
-    if(error) throw error;
+    const response = await fetch(url,{
+      method:"GET",
+      headers:{
+        "apikey":SUPABASE_KEY,
+        "Authorization":"Bearer " + SUPABASE_KEY
+      },
+      cache:"no-store"
+    });
 
-    list.innerHTML="";
+    if(!response.ok){
+      const details = await response.text();
+      console.error("Error consultando Supabase:",details);
+      throw new Error("No se pudo consultar la tabla.");
+    }
 
-    if(!data || data.length===0){
-      list.innerHTML="<li>Aún no hay puntuaciones. ¡Sé el primero!</li>";
+    const rows = await response.json();
+
+    container.replaceChildren();
+
+    if(!Array.isArray(rows) || rows.length === 0){
+      const empty = document.createElement("p");
+      empty.className = "small-note";
+      empty.textContent = "Todavía no hay puntuaciones. ¡Sé el primero!";
+      container.appendChild(empty);
     }else{
-      data.forEach((entry,index)=>{
-        const li=document.createElement("li");
-        const left=document.createElement("span");
-        left.className="player-side";
+      rows.forEach((row,index) => {
+        const item = document.createElement("div");
+        item.className = "score-row";
+        item.style.animationDelay = Math.min(index*45,300) + "ms";
 
-        const rank=document.createElement("span");
-        rank.className="rank";
-        rank.textContent=(index+1)+".";
+        const rank = document.createElement("div");
+        rank.className = "rank";
+        rank.textContent = ["🥇","🥈","🥉"][index] || String(index+1);
 
-        const player=document.createElement("span");
-        player.className="player-name";
-        player.textContent=String(entry.player);
+        const info = document.createElement("div");
+        info.className = "player-info";
 
-        left.append(rank,player);
+        const name = document.createElement("div");
+        name.className = "player-name";
+        name.textContent = safeText(row.player || "Jugador");
 
-        const right=document.createElement("span");
-        right.className="score-side";
+        const mode = document.createElement("div");
+        mode.className = "player-mode";
+        mode.textContent = MODE_CONFIG[row.mode]
+          ? MODE_CONFIG[row.mode].label
+          : "Partida";
 
-        const score=document.createElement("span");
-        score.className="score";
-        score.textContent=Number(entry.score)+" pts";
+        info.append(name,mode);
 
-        const tag=document.createElement("span");
-        tag.className="mode-tag "+String(entry.mode||"").toLowerCase();
-        tag.textContent=modeLabel(entry.mode);
+        const score = document.createElement("div");
+        score.className = "player-score";
+        score.textContent = safeText(row.score) + " pts";
 
-        right.append(score,tag);
-        li.append(left,right);
-        list.appendChild(li);
+        item.append(rank,info,score);
+        container.appendChild(item);
       });
     }
 
-    connection.textContent="🟢 Clasificación conectada · ordenada por puntos";
+    $("leaderboardStatus").textContent =
+      "Mostrando las mejores puntuaciones guardadas en línea.";
   }catch(error){
-    console.error("Error cargando clasificación:",error);
-    connection.textContent="🔴 No se pudo cargar la clasificación.";
-    list.innerHTML="<li>Revisa la tabla y las políticas de Supabase.</li>";
+    console.error(error);
+
+    container.replaceChildren();
+
+    const message = document.createElement("p");
+    message.className = "small-note";
+    message.textContent =
+      "No se pudo cargar la tabla en línea. Puedes seguir jugando normalmente.";
+    container.appendChild(message);
+
+    $("leaderboardStatus").textContent =
+      "Comprueba tu conexión y los permisos de la tabla memory_scores.";
   }
 }
 
-async function submitScore(player,score,mode){
-  if(!supabaseClient) return;
+/* ---------- Controles ---------- */
 
+$("startBtn").addEventListener("click",() => {
+  getAudioContext();
+  startGame();
+});
+
+$("restartBtn").addEventListener("click",() => {
+  getAudioContext();
+  restartGame();
+});
+
+$("difficulty").addEventListener("change",() => {
+  state.mode = $("difficulty").value;
+
+  if(state.running){
+    cancelRoundTimer();
+    state.running = false;
+    state.acceptingInput = false;
+  }
+
+  state.sequence = [];
+  state.inputIndex = 0;
+  state.round = 0;
+  state.score = 0;
+  state.gameOver = false;
+  state.lastSaved = false;
+
+  buildBoard();
+  updateStats();
+  updateProgress();
+
+  $("startBtn").textContent = "▶ Empezar juego";
+  setStatus("Dificultad actualizada", "ready");
+  setHint("Presiona empezar para jugar con esta dificultad.");
+});
+
+$("soundBtn").addEventListener("click",() => {
+  state.sounds = !state.sounds;
+  $("soundBtn").textContent = state.sounds
+    ? "🔊 Sonidos: ON"
+    : "🔇 Sonidos: OFF";
+
+  if(state.sounds){
+    getAudioContext();
+    playTone(660,.1,"sine",.04);
+  }
+});
+
+$("musicBtn").addEventListener("click",() => {
+  getAudioContext();
+
+  if(state.music){
+    stopMusic();
+  }else{
+    startMusic();
+  }
+});
+
+$("playerName").addEventListener("change",() => {
   try{
-    const {error}=await supabaseClient
-      .from("memory_scores")
-      .insert({
-        player:player.slice(0,16),
-        score:Math.min(100000,Math.max(1,Math.round(score))),
-        mode:mode
-      });
-
-    if(error) throw error;
-
-    $("connection").textContent="🟢 Puntuación guardada";
-    await loadLeaderboard();
+    localStorage.setItem(
+      "neonMemoryPlayer",
+      $("playerName").value.trim().slice(0,16)
+    );
   }catch(error){
-    console.error("Error guardando puntuación:",error);
-    $("connection").textContent="⚠️ No se pudo guardar la puntuación. Revisa Supabase.";
+    // El nombre sigue disponible durante esta sesión.
   }
-}
+});
 
 $("refreshBtn").addEventListener("click",loadLeaderboard);
 
-/* INICIO */
-updateAudioButtons();
-buildBoard();
-loadBest();
-updateStats();
-loadLeaderboard();
+/* ---------- Inicio ---------- */
+
+function loadSavedPlayer(){
+  try{
+    $("playerName").value =
+      localStorage.getItem("neonMemoryPlayer") || "";
+  }catch(error){
+    $("playerName").value = "";
+  }
+}
+
+function init(){
+  state.mode = $("difficulty").value;
+  loadSavedPlayer();
+  buildBoard();
+  updateStats();
+  updateProgress();
+  loadLeaderboard();
+
+  setStatus("¿Listo para jugar?", "ready");
+  setHint("Presiona empezar y memoriza la secuencia.");
+}
+
+init();
 </script>
 </body>
 </html>
