@@ -5,162 +5,169 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#090b18">
-<title>Neon Memory | Juego de memoria</title>
-
+<title>Neon Memory 🎮</title>
 <style>
 :root {
-  --bg:#090b18; --panel:#12172b; --panel2:#1a2140;
-  --purple:#9366ff; --cyan:#42e8ff; --text:#f5f6ff;
-  --muted:#a6b0d0; --green:#45f5ad; --red:#ff5378;
+  --bg:#090b18; --panel:#13172b; --cyan:#00f5ff;
+  --pink:#ff3cac; --purple:#8b5cf6;
+  --text:#f4f7ff; --muted:#9da8c7;
 }
-* { box-sizing:border-box; margin:0; padding:0; }
-body {
-  min-height:100vh; padding:24px 14px;
-  font-family:Inter,system-ui,Arial,sans-serif;
-  color:var(--text);
-  background:radial-gradient(ellipse at top,#20204c 0%,transparent 55%),
-  linear-gradient(145deg,#080b16,#10142a 70%,#0b1020);
-  display:flex; justify-content:center; align-items:center;
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  background:radial-gradient(ellipse at top,#18254a 0%,transparent 55%),var(--bg);
+  font-family:system-ui,Arial,sans-serif
 }
-button,input { font:inherit; }
-button:focus-visible,input:focus-visible {
-  outline:3px solid var(--cyan); outline-offset:3px;
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2px solid white;outline-offset:3px
 }
-.app { width:100%; max-width:570px; }
-header { text-align:center; margin-bottom:22px; }
-.logo {
-  display:inline-block; color:var(--cyan); border:1px solid #42e8ff55;
-  background:#42e8ff0c; border-radius:30px; padding:7px 13px;
-  font-size:11px; letter-spacing:3px; font-weight:900; margin-bottom:13px;
+.container{width:min(940px,94%);margin:auto;padding:28px 0 48px}
+header{text-align:center;margin-bottom:24px}
+h1{
+  font-size:clamp(2rem,7vw,3.7rem);margin:0;letter-spacing:2px;
+  color:var(--cyan);text-shadow:0 0 18px #00f5ff70
 }
-h1 { font-size:clamp(29px,7vw,43px); line-height:1.1; font-weight:950; letter-spacing:-1.5px; }
-h1 span { color:var(--cyan); text-shadow:0 0 25px #42e8ff55; }
-.subtitle { color:var(--muted); margin-top:10px; font-size:14px; }
-.panel {
-  background:linear-gradient(145deg,#151a31ee,#101426f5);
-  border:1px solid #9ba9ff20; border-radius:22px; padding:20px;
-  box-shadow:0 18px 60px #0005,inset 0 1px #ffffff08; margin-bottom:14px;
+.subtitle{color:var(--muted);margin-top:6px}
+.panel{
+  background:#13172bef;border:1px solid #343c60;border-radius:20px;
+  padding:20px;margin-bottom:18px;box-shadow:0 8px 30px #0004
 }
-.section-label { font-size:11px; letter-spacing:2px; font-weight:850; color:var(--muted); margin-bottom:12px; display:block; }
-.modes { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
-.mode {
-  cursor:pointer; padding:13px 5px; color:var(--muted);
-  background:#ffffff04; border:1px solid #8794c526; border-radius:13px;
-  font-weight:800; transition:.2s;
+h2{margin:0 0 14px;font-size:1.25rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+select,input{
+  background:#090d20;border:1px solid #444e75;color:white;
+  border-radius:10px;padding:11px 12px
 }
-.mode small { display:block; font-size:10px; margin-top:5px; font-weight:500; }
-.mode.active { color:white; background:#9366ff20; border-color:var(--purple); box-shadow:0 0 20px #9366ff15; }
-.mode:disabled { opacity:.6; cursor:not-allowed; }
-.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:18px; }
-.stat { text-align:center; padding:12px 4px; border:1px solid #8e9bcb1c; background:#ffffff04; border-radius:14px; }
-.stat span { display:block; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:1px; margin-bottom:5px; }
-.stat strong { font-size:24px; font-variant-numeric:tabular-nums; }
-.best-value { color:#ffdc72; }
-.level-value { color:var(--cyan); }
-.status {
-  min-height:48px; text-align:center; display:flex; justify-content:center;
-  align-items:center; padding:8px; margin-bottom:14px;
-  color:var(--cyan); font-weight:800; font-size:14px;
+.controls{justify-content:center}
+.btn{
+  color:white;background:#252b49;border:1px solid #46517c;
+  border-radius:11px;padding:11px 15px;transition:transform .15s,filter .15s
 }
-.status.error { color:var(--red); }
-.status.success { color:var(--green); }
-.board { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; max-width:390px; margin:0 auto 20px; }
-.tile {
-  width:100%; aspect-ratio:1; border-radius:19px; border:2px solid #ffffff20;
-  cursor:pointer; opacity:.84; transition:transform .12s,filter .12s,opacity .12s,box-shadow .12s;
+.btn:hover{filter:brightness(1.25)}
+.btn:active{transform:scale(.97)}
+.btn.primary{
+  color:#06101c;font-weight:800;
+  background:linear-gradient(110deg,var(--cyan),#8af7ff);border:none
 }
-.tile:active { transform:scale(.95); }
-.tile:disabled { cursor:default; }
-.tile.lit { opacity:1; filter:brightness(1.5); transform:scale(1.035); border-color:#fff; box-shadow:0 0 28px var(--glow,#ffffff66); }
-.tile[data-color="0"] { background:#3287ff; --glow:#3287ff99; }
-.tile[data-color="1"] { background:#ff426b; --glow:#ff426b99; }
-.tile[data-color="2"] { background:#22d69b; --glow:#22d69b99; }
-.tile[data-color="3"] { background:#ffc94d; --glow:#ffc94d99; }
-.tile[data-color="4"] { background:#a66bff; --glow:#a66bff99; }
-.tile[data-color="5"] { background:#ff8b3d; --glow:#ff8b3d99; }
-.tile[data-color="6"] { background:#36e6e9; --glow:#36e6e999; }
-.tile[data-color="7"] { background:#ff70d2; --glow:#ff70d299; }
-.tile[data-color="8"] { background:#a9f04b; --glow:#a9f04b99; }
-.actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.btn { border:0; border-radius:13px; padding:14px 10px; cursor:pointer; font-weight:850; transition:.18s; }
-.btn:active { transform:scale(.98); }
-.btn:disabled { opacity:.5; cursor:not-allowed; }
-.primary { color:#080b18; background:linear-gradient(100deg,var(--cyan),#8dceff); box-shadow:0 5px 22px #42e8ff20; }
-.secondary { color:white; background:#ffffff09; border:1px solid #8794c52e; }
-.hint { text-align:center; color:var(--muted); font-size:12px; line-height:1.6; margin-top:15px; }
-.name-input {
-  width:100%; padding:12px 13px; color:white; background:#080c1a;
-  border:1px solid #8794c52e; border-radius:11px; margin-bottom:12px;
+.btn.active{border-color:var(--cyan);box-shadow:0 0 12px #00f5ff35}
+.audio-controls{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px
 }
-.name-input::placeholder { color:#7380a5; }
-.online-title { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; }
-.online-title h2 { font-size:17px; }
-.online-badge { font-size:10px; color:var(--green); background:#45f5ad10; border:1px solid #45f5ad35; border-radius:30px; padding:6px 9px; white-space:nowrap; }
-#leaderboard { list-style:none; }
-#leaderboard li { display:flex; align-items:center; gap:10px; padding:11px 4px; border-bottom:1px solid #ffffff0b; font-size:13px; }
-#leaderboard li:last-child { border-bottom:0; }
-.rank { width:25px; color:#ffdc72; font-weight:900; }
-.player { flex:1; overflow-wrap:anywhere; }
-.player small { display:block; color:var(--muted); margin-top:3px; font-size:10px; }
-.score { color:var(--cyan); font-weight:900; }
-.empty { color:var(--muted); text-align:center; padding:18px 5px; font-size:13px; }
-.foot { text-align:center; color:#707c9e; font-size:11px; padding:8px; }
-@media(max-width:390px) {
-  .panel { padding:15px; border-radius:18px; }
-  .board { gap:8px; }
-  .tile { border-radius:14px; }
-  .stat strong { font-size:21px; }
-  .mode { font-size:12px; }
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.stat{
+  text-align:center;padding:14px 8px;background:#090d20;
+  border:1px solid #303958;border-radius:13px
 }
-@media(prefers-reduced-motion:reduce) {
-  *,*::before,*::after { transition:none!important; }
+.stat strong{display:block;color:var(--cyan);font-size:1.7rem}
+.stat span{color:var(--muted);font-size:.85rem}
+.status{text-align:center;min-height:48px;color:#e3eaff;margin:12px 0;line-height:1.5}
+.board{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;max-width:480px;margin:18px auto
+}
+.tile{
+  aspect-ratio:1;border:2px solid #ffffff28;border-radius:18px;opacity:.7;
+  transition:opacity .12s,transform .12s,box-shadow .12s;
+  box-shadow:inset 0 0 18px #ffffff13
+}
+.tile:disabled{cursor:default;pointer-events:none}
+.tile.lit{
+  opacity:1;transform:scale(.96);border-color:white;
+  box-shadow:0 0 25px currentColor,inset 0 0 20px #ffffff66;
+  filter:brightness(1.7)
+}
+.tile[data-color="0"]{background:#ff3b68;color:#ff3b68}
+.tile[data-color="1"]{background:#00d8ff;color:#00d8ff}
+.tile[data-color="2"]{background:#a855f7;color:#a855f7}
+.tile[data-color="3"]{background:#ffb800;color:#ffb800}
+.tile[data-color="4"]{background:#27e89a;color:#27e89a}
+.tile[data-color="5"]{background:#ff65d8;color:#ff65d8}
+.tile[data-color="6"]{background:#ff713d;color:#ff713d}
+.tile[data-color="7"]{background:#6485ff;color:#6485ff}
+.tile[data-color="8"]{background:#e9ff70;color:#e9ff70}
+.hint{text-align:center;color:var(--muted);font-size:.9rem}
+.small{font-size:.85rem;color:var(--muted)}
+.leaderboard{list-style:none;margin:0;padding:0}
+.leaderboard li{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:11px 4px;border-bottom:1px solid #303958
+}
+.leaderboard li:last-child{border-bottom:none}
+.rank{color:var(--cyan);font-weight:800;min-width:28px}
+.player-name{overflow-wrap:anywhere}
+.score{color:#ffe27a;font-weight:800}
+footer{
+  text-align:center;color:var(--muted);font-size:.9rem;
+  margin-top:34px;padding:24px 12px;border-top:1px solid #343c60;
+  line-height:1.8
+}
+footer .credits-title{color:var(--cyan);font-weight:800;font-size:1rem}
+footer .credits-names{color:#f4f7ff}
+footer .credits-event{color:#ff65d8;font-weight:700}
+@media(max-width:520px){
+  .container{width:94%;padding-top:20px}
+  .panel{padding:15px}.board{gap:8px}.tile{border-radius:13px}
+  .btn{padding:10px 12px}
 }
 </style>
 </head>
 <body>
-<main class="app">
+<main class="container">
   <header>
-    <div class="logo">◆ ARCADE MEMORY SYSTEM ◆</div>
-    <h1>NEON <span>MEMORY</span></h1>
-    <p class="subtitle">Tu memoria es tu mejor arma. ¿Hasta dónde llegarás?</p>
+    <h1>NEON MEMORY</h1>
+    <p class="subtitle">🧠 Memoriza los colores. Supera tu récord.</p>
   </header>
 
   <section class="panel">
-    <div class="section-label">01 / ELIGE TU DIFICULTAD</div>
-    <div class="modes">
-      <button class="mode active" data-mode="easy">🟢 Fácil<small>4 colores</small></button>
-      <button class="mode" data-mode="normal">🟡 Normal<small>6 colores</small></button>
-      <button class="mode" data-mode="hard">🔴 Difícil<small>9 colores</small></button>
+    <div class="row controls">
+      <label for="mode">Dificultad:</label>
+      <select id="mode">
+        <option value="easy">Fácil</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Difícil</option>
+      </select>
+      <button id="startBtn" class="btn primary">▶ Jugar</button>
     </div>
-  </section>
 
-  <section class="panel">
+    <div class="audio-controls">
+      <button id="soundBtn" class="btn active" aria-pressed="true">🔊 Sonidos: ON</button>
+      <button id="musicBtn" class="btn active" aria-pressed="true">🎵 Música: ON</button>
+    </div>
+    <p class="hint">La música comienza después de pulsar un botón.</p>
+
     <div class="stats">
-      <div class="stat"><span>RONDA</span><strong id="round">0</strong></div>
-      <div class="stat"><span>RÉCORD PERSONAL</span><strong class="best-value" id="best">0</strong></div>
-      <div class="stat"><span>COLOR POR COLOR</span><strong class="level-value" id="progress">0/0</strong></div>
+      <div class="stat"><strong id="round">0</strong><span>Ronda</span></div>
+      <div class="stat"><strong id="best">0</strong><span>Tu récord</span></div>
+      <div class="stat"><strong id="points">0</strong><span>Puntos</span></div>
     </div>
-    <div id="message" class="status" role="status" aria-live="polite">Pulsa «Comenzar» para jugar.</div>
-    <div class="board" id="board" aria-label="Tablero de colores"></div>
-    <div class="actions">
-      <button id="start" class="btn primary">▶ COMENZAR</button>
-      <button id="restart" class="btn secondary">↻ REINICIAR</button>
-    </div>
-    <p class="hint" id="hint">Observa la secuencia y repite los colores en el mismo orden. Cada ronda agrega un color más.</p>
+
+    <p id="status" class="status" aria-live="polite">Pulsa «Jugar» para comenzar.</p>
+    <div id="board" class="board" aria-label="Tablero de colores"></div>
+    <p class="hint">Observa la secuencia y repítela en el mismo orden.</p>
   </section>
 
   <section class="panel">
-    <div class="online-title">
-      <h2>🏆 Clasificación global</h2>
-      <span class="online-badge" id="connection">● COMPROBANDO</span>
+    <h2>🏆 Clasificación mundial</h2>
+    <p class="small">Escribe tu apodo para guardar tus puntuaciones.</p>
+    <div class="row">
+      <input id="nickname" maxlength="16" placeholder="Tu apodo" autocomplete="nickname" aria-label="Tu apodo">
+      <button id="saveNameBtn" class="btn">Guardar apodo</button>
+      <button id="refreshBtn" class="btn">↻ Actualizar</button>
     </div>
-    <label class="section-label" for="playerName">TU NOMBRE DE JUGADOR</label>
-    <input id="playerName" class="name-input" maxlength="16" placeholder="Escribe tu apodo..." autocomplete="nickname">
-    <ol id="leaderboard"><li class="empty">Cargando clasificación...</li></ol>
-    <p class="hint" id="onlineMessage">Conectando la clasificación global...</p>
-    <button id="refresh" class="btn secondary" style="width:100%;margin-top:12px">⟳ ACTUALIZAR CLASIFICACIÓN</button>
+    <p id="connection" class="small" aria-live="polite">Conectando con la clasificación...</p>
+    <ol id="leaderboard" class="leaderboard">
+      <li>Cargando puntuaciones...</li>
+    </ol>
   </section>
-  <p class="foot">NEON MEMORY · Entrena tu mente, supera tu récord.</p>
+
+  <footer>
+    <p>🎮 NEON MEMORY · Juego de memoria de colores</p>
+    <p class="credits-title">CREADO POR</p>
+    <p class="credits-names">Samuel Ramirez, Zaray Ramos, Bonilla Fong y Juan David Perdomo</p>
+    <p class="credits-event">Grado 10° · Feria de la Ciencia 🔬</p>
+  </footer>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -171,388 +178,354 @@ h1 span { color:var(--cyan); text-shadow:0 0 25px #42e8ff55; }
 const SUPABASE_URL = "https://ckspckfzzeguqyfghkyz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_qE2xjMbqzykV-NcL9p4AlQ_BT56-okJ";
 
-const MODES = {
-  easy: { name:"Fácil", count:4, speed:520 },
-  normal: { name:"Normal", count:6, speed:390 },
-  hard: { name:"Difícil", count:9, speed:270 }
-};
+/* SONIDOS Y MÚSICA */
+const SOUND_KEY = "neon-memory-sound-v1";
+const MUSIC_KEY = "neon-memory-music-v1";
+let soundOn = localStorage.getItem(SOUND_KEY) !== "off";
+let musicOn = localStorage.getItem(MUSIC_KEY) !== "off";
+let audioCtx = null;
+let masterGain = null;
+let musicTimer = null;
+let musicStep = 0;
 
-const $ = id => document.getElementById(id);
-const board = $("board");
-const message = $("message");
-const roundDisplay = $("round");
-const bestDisplay = $("best");
-const progressDisplay = $("progress");
-const startButton = $("start");
-const restartButton = $("restart");
-const nameInput = $("playerName");
-const leaderboard = $("leaderboard");
-const connection = $("connection");
-const onlineMessage = $("onlineMessage");
-const modeButtons = [...document.querySelectorAll(".mode")];
-
-let mode = "easy";
-let sequence = [];
-let playerPosition = 0;
-let round = 0;
-let best = 0;
-let acceptingInput = false;
-let gameOver = false;
-let gameStarted = false;
-let busy = false;
-let runId = 0;
-let timers = [];
-let supabaseClient = null;
-let submittingScore = false;
-
-const colorNames = ["Azul","Rojo","Verde","Amarillo","Morado","Naranja","Turquesa","Rosa","Verde lima"];
-
-function wait(ms, id = runId) {
-  return new Promise(resolve => {
-    const timer = setTimeout(() => {
-      timers = timers.filter(t => t !== timer);
-      resolve(id === runId);
-    }, ms);
-    timers.push(timer);
-  });
-}
-
-function cancelTimers() {
-  timers.forEach(clearTimeout);
-  timers = [];
-}
-
-function setMessage(text, type = "") {
-  message.textContent = text;
-  message.className = "status" + (type ? " " + type : "");
-}
-
-function storageKey() {
-  return "neon-memory-best-v1-" + mode;
-}
-
-function loadBest() {
-  try { best = Number(localStorage.getItem(storageKey())) || 0; }
-  catch (_) { best = 0; }
-  bestDisplay.textContent = best;
-}
-
-function saveBest() {
-  try { localStorage.setItem(storageKey(), String(best)); }
-  catch (_) {}
-}
-
-function createBoard() {
-  board.replaceChildren();
-  for (let i = 0; i < MODES[mode].count; i++) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "tile";
-    button.dataset.color = String(i);
-    button.setAttribute("aria-label", colorNames[i]);
-    button.title = colorNames[i];
-    button.disabled = true;
-    button.addEventListener("click", handleColorClick);
-    board.appendChild(button);
+function initAudio(){
+  const AudioClass = window.AudioContext || window.webkitAudioContext;
+  if(!AudioClass) return false;
+  if(!audioCtx){
+    audioCtx = new AudioClass();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.20;
+    masterGain.connect(audioCtx.destination);
   }
-  updateProgress();
+  if(audioCtx.state === "suspended") audioCtx.resume().catch(()=>{});
+  return true;
 }
 
-function tiles() {
-  return [...board.querySelectorAll(".tile")];
+function tone(freq,duration=0.12,type="sine",volume=0.20,delay=0){
+  if(!soundOn || !initAudio()) return;
+  const start = audioCtx.currentTime + delay;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq,start);
+  gain.gain.setValueAtTime(0.0001,start);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0002,volume),start+0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+  osc.connect(gain);
+  gain.connect(masterGain);
+  osc.start(start);
+  osc.stop(start+duration+0.03);
 }
-
-function enableTiles(enabled) {
-  tiles().forEach(tile => tile.disabled = !enabled);
+function playColorSound(index){
+  const notes=[262,330,392,440,523,587,659,784,880];
+  tone(notes[index]||440,0.14,"sine",0.24);
 }
-
-function updateProgress() {
-  progressDisplay.textContent = playerPosition + "/" + sequence.length;
+function playCorrectSound(){
+  [523,659,784].forEach((n,i)=>tone(n,0.16,"triangle",0.18,i*0.09));
 }
-
-function lightColor(index, duration) {
-  const tile = tiles()[index];
-  if (!tile) return;
-  tile.classList.add("lit");
-  const timer = setTimeout(() => {
-    tile.classList.remove("lit");
-    timers = timers.filter(t => t !== timer);
-  }, duration);
-  timers.push(timer);
+function playWrongSound(){
+  tone(220,0.25,"sawtooth",0.16);
+  tone(165,0.35,"sawtooth",0.12,0.15);
 }
-
-function clearLights() {
-  tiles().forEach(tile => tile.classList.remove("lit"));
+function playStartSound(){
+  [392,523,659].forEach((n,i)=>tone(n,0.12,"triangle",0.14,i*0.07));
 }
-
-function updateModeButtons() {
-  modeButtons.forEach(button => {
-    button.classList.toggle("active", button.dataset.mode === mode);
-    button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
-  });
+function playGameOverSound(){
+  [392,330,262,196].forEach((n,i)=>tone(n,0.24,"triangle",0.18,i*0.16));
 }
-
-function updateStartButton() {
-  startButton.textContent = gameStarted && !gameOver ? "↻ NUEVA PARTIDA" : "▶ COMENZAR";
+function stopMusic(){
+  if(musicTimer!==null){clearInterval(musicTimer);musicTimer=null;}
 }
-
-async function showSequence(id) {
-  acceptingInput = false;
-  busy = true;
-  enableTiles(false);
-  startButton.disabled = true;
-  restartButton.disabled = true;
-  modeButtons.forEach(button => button.disabled = true);
-  setMessage("👀 ¡Memoriza la secuencia!");
-
-  if (!await wait(650, id)) return;
-  const speed = MODES[mode].speed;
-
-  for (const index of sequence) {
-    if (id !== runId) return;
-    lightColor(index, Math.max(150, speed - 90));
-    if (!await wait(speed, id)) return;
-  }
-
-  if (id !== runId) return;
-  clearLights();
-  setMessage("🧠 ¡Tu turno! Repite el orden.");
-  playerPosition = 0;
-  updateProgress();
-  acceptingInput = true;
-  busy = false;
-  enableTiles(true);
-  startButton.disabled = false;
-  restartButton.disabled = false;
-  modeButtons.forEach(button => button.disabled = false);
+function startMusic(){
+  stopMusic();
+  if(!musicOn || !initAudio()) return;
+  const melody=[523,659,784,659,587,659,880,784,523,659,784,1046,880,784,659,587];
+  musicTimer=setInterval(()=>{
+    if(!musicOn || !audioCtx || audioCtx.state!=="running") return;
+    const note=melody[musicStep%melody.length];
+    const volume=musicStep%4===0?0.075:0.035;
+    const osc=audioCtx.createOscillator();
+    const gain=audioCtx.createGain();
+    const now=audioCtx.currentTime;
+    osc.type="sine";
+    osc.frequency.setValueAtTime(note,now);
+    gain.gain.setValueAtTime(0.0001,now);
+    gain.gain.exponentialRampToValueAtTime(volume,now+0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001,now+0.24);
+    osc.connect(gain);gain.connect(masterGain);
+    osc.start(now);osc.stop(now+0.26);
+    musicStep++;
+  },260);
 }
-
-async function nextRound(id = runId) {
-  if (id !== runId || gameOver) return;
-  round++;
-  roundDisplay.textContent = round;
-  sequence.push(Math.floor(Math.random() * MODES[mode].count));
-  updateProgress();
-  await showSequence(id);
+function updateAudioButtons(){
+  const sb=document.getElementById("soundBtn");
+  const mb=document.getElementById("musicBtn");
+  sb.textContent=soundOn?"🔊 Sonidos: ON":"🔇 Sonidos: OFF";
+  sb.classList.toggle("active",soundOn);
+  sb.setAttribute("aria-pressed",String(soundOn));
+  mb.textContent=musicOn?"🎵 Música: ON":"🎵 Música: OFF";
+  mb.classList.toggle("active",musicOn);
+  mb.setAttribute("aria-pressed",String(musicOn));
 }
-
-function startGame() {
-  runId++;
-  cancelTimers();
-  clearLights();
-  sequence = [];
-  playerPosition = 0;
-  round = 0;
-  acceptingInput = false;
-  gameOver = false;
-  gameStarted = true;
-  busy = false;
-  roundDisplay.textContent = "0";
-  updateProgress();
-  setMessage("⚡ ¡Prepárate!");
-  updateStartButton();
-  nextRound(runId);
-}
-
-function chooseMode(nextMode) {
-  if (!MODES[nextMode] || nextMode === mode) return;
-  mode = nextMode;
-  runId++;
-  cancelTimers();
-  clearLights();
-  sequence = [];
-  playerPosition = 0;
-  round = 0;
-  acceptingInput = false;
-  gameOver = false;
-  gameStarted = false;
-  busy = false;
-  roundDisplay.textContent = "0";
-  updateModeButtons();
-  createBoard();
-  loadBest();
-  updateStartButton();
-  startButton.disabled = false;
-  restartButton.disabled = false;
-  modeButtons.forEach(button => button.disabled = false);
-  setMessage("Modo " + MODES[mode].name + " seleccionado.");
-}
-
-async function handleColorClick(event) {
-  if (!acceptingInput || gameOver || busy) return;
-  const index = Number(event.currentTarget.dataset.color);
-
-  if (index !== sequence[playerPosition]) {
-    finishGame();
-    return;
-  }
-
-  lightColor(index, 150);
-  playerPosition++;
-  updateProgress();
-
-  if (playerPosition === sequence.length) {
-    acceptingInput = false;
-    busy = true;
-    enableTiles(false);
-    setMessage("✅ ¡Secuencia perfecta!");
-    const currentRun = runId;
-    await wait(650, currentRun);
-    if (currentRun !== runId || gameOver || !gameStarted) return;
-    busy = false;
-    nextRound(currentRun);
-  }
-}
-
-async function finishGame() {
-  if (gameOver) return;
-  acceptingInput = false;
-  gameOver = true;
-  busy = false;
-  enableTiles(false);
-  clearLights();
-
-  const id = runId;
-  const finalRound = round;
-  const previousBest = best;
-
-  if (round > best) {
-    best = round;
-    bestDisplay.textContent = best;
-    saveBest();
-  }
-
-  setMessage(
-    round > previousBest
-      ? "🏆 ¡NUEVO RÉCORD! Llegaste a la ronda " + finalRound + "."
-      : "💥 Fin del juego. Llegaste a la ronda " + finalRound + ".",
-    round > previousBest ? "success" : "error"
-  );
-
-  updateStartButton();
-  startButton.disabled = false;
-  restartButton.disabled = false;
-  modeButtons.forEach(button => button.disabled = false);
-
-  if (finalRound > 0) await submitGlobalScore(finalRound, mode, id);
-}
-
-function setupSupabase() {
-  if (!SUPABASE_URL || !SUPABASE_KEY || !window.supabase || !window.supabase.createClient) {
-    connection.textContent = "● SIN CONFIGURAR";
-    connection.style.color = "#ffdc72";
-    onlineMessage.textContent = "El récord personal funciona, pero falta configurar Supabase.";
-    leaderboard.replaceChildren();
-    const li = document.createElement("li");
-    li.className = "empty";
-    li.textContent = "La clasificación global aún no está conectada.";
-    leaderboard.appendChild(li);
-    return;
-  }
-
-  try {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    loadLeaderboard();
-  } catch (error) {
-    connection.textContent = "● ERROR";
-    onlineMessage.textContent = "No se pudo iniciar la conexión con la base de datos.";
-  }
-}
-
-async function loadLeaderboard() {
-  if (!supabaseClient) return;
-  connection.textContent = "● CONECTANDO";
-  onlineMessage.textContent = "Consultando las mejores puntuaciones...";
-
-  const { data, error } = await supabaseClient
-    .from("memory_scores")
-    .select("player, score, mode, created_at")
-    .order("score", { ascending: false })
-    .order("created_at", { ascending: true })
-    .limit(10);
-
-  if (error) {
-    connection.textContent = "● REVISAR CONFIG.";
-    onlineMessage.textContent = "No se pudo cargar la clasificación. Comprueba la tabla y sus permisos en Supabase.";
-    leaderboard.replaceChildren();
-    const li = document.createElement("li");
-    li.className = "empty";
-    li.textContent = "Clasificación no disponible.";
-    leaderboard.appendChild(li);
-    return;
-  }
-
-  connection.textContent = "● EN LÍNEA";
-  onlineMessage.textContent = "Top 10 de puntuaciones enviadas a la base de datos.";
-  leaderboard.replaceChildren();
-
-  if (!data || data.length === 0) {
-    const li = document.createElement("li");
-    li.className = "empty";
-    li.textContent = "¡Sé el primero en registrar una puntuación!";
-    leaderboard.appendChild(li);
-    return;
-  }
-
-  data.forEach((entry, index) => {
-    const li = document.createElement("li");
-    const rank = document.createElement("span");
-    rank.className = "rank";
-    rank.textContent = "#" + (index + 1);
-
-    const player = document.createElement("span");
-    player.className = "player";
-    player.textContent = entry.player;
-    const small = document.createElement("small");
-    small.textContent = MODES[entry.mode]?.name || entry.mode;
-    player.appendChild(small);
-
-    const score = document.createElement("span");
-    score.className = "score";
-    score.textContent = entry.score + " rondas";
-    li.append(rank, player, score);
-    leaderboard.appendChild(li);
-  });
-}
-
-async function submitGlobalScore(score, scoreMode, id) {
-  if (!supabaseClient || submittingScore) return;
-  const player = nameInput.value.trim().replace(/\s+/g, " ").slice(0, 16);
-
-  if (!player) {
-    onlineMessage.textContent = "Escribe tu apodo para enviar tu puntuación a la clasificación global.";
-    return;
-  }
-
-  submittingScore = true;
-  onlineMessage.textContent = "Enviando tu puntuación...";
-
-  try {
-    const { error } = await supabaseClient
-      .from("memory_scores")
-      .insert({ player, score, mode: scoreMode });
-
-    if (error) throw error;
-    if (id === runId) onlineMessage.textContent = "¡Puntuación enviada correctamente!";
-    await loadLeaderboard();
-  } catch (error) {
-    onlineMessage.textContent = "No se pudo guardar la puntuación. Comprueba los permisos de Supabase.";
-  } finally {
-    submittingScore = false;
-  }
-}
-
-modeButtons.forEach(button => {
-  button.addEventListener("click", () => chooseMode(button.dataset.mode));
+document.getElementById("soundBtn").addEventListener("click",()=>{
+  soundOn=!soundOn;
+  localStorage.setItem(SOUND_KEY,soundOn?"on":"off");
+  if(soundOn){initAudio();tone(659,0.12,"sine",0.18);}
+  updateAudioButtons();
 });
-startButton.addEventListener("click", startGame);
-restartButton.addEventListener("click", startGame);
-$("refresh").addEventListener("click", loadLeaderboard);
+document.getElementById("musicBtn").addEventListener("click",()=>{
+  musicOn=!musicOn;
+  localStorage.setItem(MUSIC_KEY,musicOn?"on":"off");
+  if(musicOn){initAudio();startMusic();}else{stopMusic();}
+  updateAudioButtons();
+});
 
-createBoard();
+/* LÓGICA DEL JUEGO */
+const MODES={
+  easy:{colors:4,speed:650,label:"Fácil"},
+  normal:{colors:6,speed:480,label:"Normal"},
+  hard:{colors:9,speed:330,label:"Difícil"}
+};
+const $=id=>document.getElementById(id);
+const board=$("board");
+const modeSelect=$("mode");
+const startBtn=$("startBtn");
+const statusEl=$("status");
+let sequence=[];
+let inputPosition=0;
+let round=0;
+let points=0;
+let best=0;
+let acceptingInput=false;
+let gameRunning=false;
+let runId=0;
+const colors=[
+  "#ff3b68","#00d8ff","#a855f7","#ffb800","#27e89a",
+  "#ff65d8","#ff713d","#6485ff","#e9ff70"
+];
+function bestKey(){return "neon-memory-best-v1-"+modeSelect.value;}
+function loadBest(){
+  best=Number(localStorage.getItem(bestKey()))||0;
+  $("best").textContent=best;
+}
+function updateStats(){
+  $("round").textContent=round;
+  $("points").textContent=points;
+  $("best").textContent=best;
+}
+function setStatus(message){statusEl.textContent=message;}
+function buildBoard(){
+  board.innerHTML="";
+  const total=MODES[modeSelect.value].colors;
+  board.style.gridTemplateColumns=total===4
+    ?"repeat(2,minmax(0,1fr))":"repeat(3,minmax(0,1fr))";
+  for(let i=0;i<total;i++){
+    const tile=document.createElement("button");
+    tile.className="tile";
+    tile.type="button";
+    tile.dataset.color=String(i);
+    tile.setAttribute("aria-label","Color "+(i+1));
+    tile.style.background=colors[i];
+    tile.addEventListener("click",()=>handleTileClick(i,tile));
+    board.appendChild(tile);
+  }
+  setTilesDisabled(true);
+}
+function setTilesDisabled(disabled){
+  board.querySelectorAll(".tile").forEach(tile=>tile.disabled=disabled);
+}
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+async function flashTile(index,duration,token){
+  if(token!==runId)return;
+  const tile=board.querySelector('[data-color="'+index+'"]');
+  if(!tile)return;
+  tile.classList.add("lit");
+  playColorSound(index);
+  await sleep(duration);
+  tile.classList.remove("lit");
+}
+async function showSequence(token){
+  acceptingInput=false;
+  setTilesDisabled(true);
+  setStatus("👀 ¡Mira bien la secuencia!");
+  await sleep(450);
+  if(token!==runId)return;
+  const speed=MODES[modeSelect.value].speed;
+  for(const index of sequence){
+    if(token!==runId)return;
+    await flashTile(index,speed*0.65,token);
+    await sleep(speed*0.30);
+  }
+  if(token!==runId)return;
+  acceptingInput=true;
+  setTilesDisabled(false);
+  setStatus("🧠 ¡Tu turno! Repite los colores en orden.");
+}
+function nextRound(){
+  const token=runId;
+  round++;
+  inputPosition=0;
+  sequence.push(Math.floor(Math.random()*MODES[modeSelect.value].colors));
+  updateStats();
+  showSequence(token);
+}
+function startGame(){
+  runId++;
+  sequence=[];
+  inputPosition=0;
+  round=0;
+  points=0;
+  gameRunning=true;
+  acceptingInput=false;
+  initAudio();
+  if(musicOn)startMusic();
+  playStartSound();
+  startBtn.textContent="↻ Reiniciar";
+  updateStats();
+  nextRound();
+}
+function handleTileClick(index,tile){
+  if(!acceptingInput||!gameRunning)return;
+  tile.classList.add("lit");
+  setTimeout(()=>tile.classList.remove("lit"),130);
+  playColorSound(index);
+  if(sequence[inputPosition]!==index){gameOver();return;}
+  inputPosition++;
+  if(inputPosition===sequence.length){
+    acceptingInput=false;
+    setTilesDisabled(true);
+    points=round*10;
+    if(round>best){
+      best=round;
+      localStorage.setItem(bestKey(),String(best));
+    }
+    updateStats();
+    playCorrectSound();
+    setStatus("✨ ¡Perfecto! Preparando la siguiente ronda...");
+    const token=runId;
+    setTimeout(()=>{if(token===runId&&gameRunning)nextRound();},700);
+  }
+}
+function gameOver(){
+  acceptingInput=false;
+  gameRunning=false;
+  setTilesDisabled(true);
+  playWrongSound();
+  setTimeout(()=>playGameOverSound(),350);
+  const finalPoints=points;
+  setStatus("💥 ¡Fin de la partida! Llegaste a la ronda "+round+
+    ". Puntuación: "+finalPoints+".");
+  startBtn.textContent="▶ Jugar otra vez";
+  const nickname=$("nickname").value.trim();
+  if(nickname&&finalPoints>0)submitScore(nickname,finalPoints,modeSelect.value);
+}
+modeSelect.addEventListener("change",()=>{
+  runId++;
+  gameRunning=false;
+  acceptingInput=false;
+  sequence=[];
+  round=0;
+  points=0;
+  startBtn.textContent="▶ Jugar";
+  buildBoard();
+  loadBest();
+  updateStats();
+  setStatus("Modo "+MODES[modeSelect.value].label+". Pulsa «Jugar» para comenzar.");
+});
+startBtn.addEventListener("click",startGame);
+
+/* APODO DEL JUGADOR */
+$("nickname").value=localStorage.getItem("neon-memory-player-v1")||"";
+$("saveNameBtn").addEventListener("click",()=>{
+  const name=$("nickname").value.trim();
+  if(!name){
+    setStatus("Escribe primero tu apodo.");
+    $("nickname").focus();
+    return;
+  }
+  if(name.length>16){setStatus("Tu apodo debe tener máximo 16 caracteres.");return;}
+  localStorage.setItem("neon-memory-player-v1",name);
+  setStatus("✅ Apodo guardado: "+name);
+});
+
+/* CLASIFICACIÓN SUPABASE */
+let supabaseClient=null;
+try{
+  if(window.supabase&&SUPABASE_URL&&SUPABASE_KEY){
+    supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  }
+}catch(error){console.error("No se pudo iniciar Supabase:",error);}
+
+async function loadLeaderboard(){
+  const list=$("leaderboard");
+  const connection=$("connection");
+  if(!supabaseClient){
+    connection.textContent="⚠️ No se pudo iniciar la conexión.";
+    list.innerHTML="<li>Revisa la configuración de Supabase.</li>";
+    return;
+  }
+  connection.textContent="Conectando...";
+  list.innerHTML="<li>Cargando puntuaciones...</li>";
+  try{
+    const {data,error}=await supabaseClient
+      .from("memory_scores")
+      .select("player, score, mode, created_at")
+      .order("score",{ascending:false})
+      .order("created_at",{ascending:true})
+      .limit(10);
+    if(error)throw error;
+    list.innerHTML="";
+    if(!data||data.length===0){
+      list.innerHTML="<li>Aún no hay puntuaciones. ¡Sé el primero!</li>";
+    }else{
+      data.forEach((entry,index)=>{
+        const li=document.createElement("li");
+        const left=document.createElement("span");
+        left.className="player-name";
+        const rank=document.createElement("span");
+        rank.className="rank";
+        rank.textContent=(index+1)+". ";
+        const player=document.createElement("span");
+        player.textContent=String(entry.player);
+        left.append(rank,player);
+        const right=document.createElement("span");
+        right.className="score";
+        right.textContent=Number(entry.score)+" pts";
+        li.append(left,right);
+        list.appendChild(li);
+      });
+    }
+    connection.textContent="🟢 Clasificación conectada";
+  }catch(error){
+    console.error("Error cargando clasificación:",error);
+    connection.textContent="🔴 No se pudo cargar la clasificación.";
+    list.innerHTML="<li>Revisa la tabla y las políticas de Supabase.</li>";
+  }
+}
+async function submitScore(player,score,mode){
+  if(!supabaseClient)return;
+  try{
+    const {error}=await supabaseClient.from("memory_scores").insert({
+      player:player.slice(0,16),
+      score:Math.min(10000,Math.max(1,Math.round(score))),
+      mode:mode
+    });
+    if(error)throw error;
+    $("connection").textContent="🟢 Puntuación guardada";
+    await loadLeaderboard();
+  }catch(error){
+    console.error("Error guardando puntuación:",error);
+    $("connection").textContent="⚠️ No se pudo guardar la puntuación. Revisa Supabase.";
+  }
+}
+$("refreshBtn").addEventListener("click",loadLeaderboard);
+
+/* INICIO */
+updateAudioButtons();
+buildBoard();
 loadBest();
-updateModeButtons();
-setupSupabase();
+updateStats();
+loadLeaderboard();
 </script>
 </body>
 </html>
